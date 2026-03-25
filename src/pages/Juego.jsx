@@ -1,7 +1,9 @@
 import { useProgress } from '../context/ProgressContext';
+import { useNavigate } from 'react-router-dom';
 
 export default function Juego() {
   const { completed, markComplete } = useProgress();
+  const navigate = useNavigate();
 
   return (
     <div className="page-content">
@@ -12,9 +14,17 @@ export default function Juego() {
           Próximamente... ¡Prepárate para divertirte con un juego interactivo!
         </p>
         {completed.juego ? (
-          <div className="completion-inline">
-            <span>✅</span> ¡Listo! Ya revisaste esta sección
-          </div>
+          <>
+            <div className="completion-inline">
+              <span>✅</span> ¡Listo! Ya revisaste esta sección
+            </div>
+            <button
+              className="btn btn-primary completion-action-btn"
+              onClick={() => navigate('/')}
+            >
+              Entendido
+            </button>
+          </>
         ) : (
           <button
             className="btn btn-primary"

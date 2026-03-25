@@ -97,68 +97,73 @@ export default function Inicio() {
       </section>
 
       <section className="section">
+        <div className="itinerary-top-cta">
+          <button className="btn btn-primary btn-sm" onClick={() => navigate('/regalos')}>
+            🎁 Lista de regalos
+          </button>
+        </div>
         <h2 className="section-title">Itinerario</h2>
         <div className="itinerary-list">
           <div className="itinerary-item">
-            <div className="itinerary-icon">🎉</div>
+            <div className="itinerary-icon">✦</div>
             <div className="itinerary-detail">
-              <span className="itinerary-time">2:00 PM</span>
+              <span className="itinerary-time">04:00 pm</span>
               <h4>Inicio</h4>
             </div>
           </div>
           <div className="itinerary-item">
-            <div className="itinerary-icon">🎨</div>
+            <div className="itinerary-icon">◎</div>
             <div className="itinerary-detail">
-              <span className="itinerary-time">3:00 PM</span>
-              <h4>Castillos Inflables</h4>
+              <span className="itinerary-time">04:00 pm</span>
+              <h4>Caritas pintadas</h4>
             </div>
           </div>
           <div className="itinerary-item">
-            <div className="itinerary-icon">🎭</div>
+            <div className="itinerary-icon">◎</div>
             <div className="itinerary-detail">
-              <span className="itinerary-time">4:00 PM</span>
-              <h4>Show Infantil</h4>
+              <span className="itinerary-time">05:00 pm</span>
+              <h4>Show infantil</h4>
             </div>
           </div>
           <div className="itinerary-item">
-            <div className="itinerary-icon">🎂</div>
+            <div className="itinerary-icon">◎</div>
             <div className="itinerary-detail">
-              <span className="itinerary-time">5:00 PM</span>
+              <span className="itinerary-time">06:30 pm</span>
               <h4>Feliz cumpleaños</h4>
             </div>
           </div>
           <div className="itinerary-item">
-            <div className="itinerary-icon">👑</div>
+            <div className="itinerary-icon">◎</div>
             <div className="itinerary-detail">
-              <span className="itinerary-time">5:30 PM</span>
+              <span className="itinerary-time">08:00 pm</span>
               <h4>Entrada del Rey</h4>
             </div>
           </div>
           <div className="itinerary-item">
-            <div className="itinerary-icon">🍰</div>
+            <div className="itinerary-icon">◎</div>
             <div className="itinerary-detail">
-              <span className="itinerary-time">6:00 PM</span>
-              <h4>Corte de pastel</h4>
+              <span className="itinerary-time">08:20 pm</span>
+              <h4>Corte de pelo</h4>
             </div>
           </div>
           <div className="itinerary-item">
-            <div className="itinerary-icon">🎮</div>
+            <div className="itinerary-icon">◎</div>
             <div className="itinerary-detail">
-              <span className="itinerary-time">6:30 PM</span>
+              <span className="itinerary-time">08:40 pm</span>
               <h4>Juegos divertidos para los grandes</h4>
             </div>
           </div>
           <div className="itinerary-item">
-            <div className="itinerary-icon">🍽️</div>
+            <div className="itinerary-icon">◎</div>
             <div className="itinerary-detail">
-              <span className="itinerary-time">7:15 PM</span>
+              <span className="itinerary-time">09:30 pm</span>
               <h4>Cena</h4>
             </div>
           </div>
           <div className="itinerary-item">
-            <div className="itinerary-icon">🎊</div>
+            <div className="itinerary-icon">✓</div>
             <div className="itinerary-detail">
-              <span className="itinerary-time">9:30 PM</span>
+              <span className="itinerary-time">10:30 pm</span>
               <h4>Y sigue la fiesta...</h4>
             </div>
           </div>

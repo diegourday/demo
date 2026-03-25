@@ -29,10 +29,9 @@ export default function Dedicatorias() {
   const [form, setForm] = useState({ name: '', text: '' });
   const [avatar, setAvatar] = useState(null);
   const [editingId, setEditingId] = useState(null);
-  const [showToast, setShowToast] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef(null);
-  const { markComplete } = useProgress();
+  const { markComplete, showStepSuccessToast } = useProgress();
 
   const handleAvatarFile = (file) => {
     if (!file || !file.type.startsWith('image/')) return;
@@ -83,9 +82,8 @@ export default function Dedicatorias() {
 
     setForm({ name: '', text: '' });
     setAvatar(null);
+    showStepSuccessToast('dedicatorias');
     markComplete('dedicatorias');
-    setShowToast(true);
-    setTimeout(() => setShowToast(false), 3000);
   };
 
   const handleEdit = (comment) => {
@@ -228,10 +226,6 @@ export default function Dedicatorias() {
           ))}
         </div>
       </div>
-
-      {showToast && (
-        <div className="success-toast">💌 ¡Dedicatoria enviada con éxito!</div>
-      )}
     </div>
   );
 }

@@ -22,10 +22,9 @@ const gifts = [
 
 export default function Regalos() {
   const [items, setItems] = useState(gifts);
-  const [showToast, setShowToast] = useState(false);
   const [selectedGift, setSelectedGift] = useState(null);
   const [modalForm, setModalForm] = useState({ name: '', phone: '', commit: false });
-  const { markComplete } = useProgress();
+  const { markComplete, showStepSuccessToast } = useProgress();
 
   useEffect(() => {
     if (selectedGift) {
@@ -41,9 +40,8 @@ export default function Regalos() {
     setItems(items.map(g => g.id === selectedGift.id ? { ...g, reserved: true } : g));
     setSelectedGift(null);
     setModalForm({ name: '', phone: '', commit: false });
+    showStepSuccessToast('regalos');
     markComplete('regalos');
-    setShowToast(true);
-    setTimeout(() => setShowToast(false), 3000);
   };
 
   const available = items.filter(g => !g.reserved).length;
@@ -147,10 +145,6 @@ export default function Regalos() {
             </button>
           </div>
         </div>
-      )}
-
-      {showToast && (
-        <div className="success-toast">🎁 ¡Regalo reservado con éxito!</div>
       )}
     </div>
   );

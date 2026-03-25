@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useProgress } from '../context/ProgressContext';
 
 const dinnerOptions = [
@@ -17,9 +18,9 @@ const drinkOptions = [
 ];
 
 export default function Asistencia() {
-  const [showToast, setShowToast] = useState(false);
   const [submitted, setSubmitted] = useState(false);
-  const { completed, markComplete } = useProgress();
+  const { completed, markComplete, showStepSuccessToast } = useProgress();
+  const navigate = useNavigate();
   const [form, setForm] = useState({
     attending: '',
     phone: '',
@@ -44,9 +45,8 @@ export default function Asistencia() {
   const handleSubmit = (e) => {
     e.preventDefault();
     setSubmitted(true);
+    showStepSuccessToast('asistencia');
     markComplete('asistencia');
-    setShowToast(true);
-    setTimeout(() => setShowToast(false), 3000);
   };
 
   if (submitted || completed.asistencia) {
@@ -59,6 +59,9 @@ export default function Asistencia() {
             Gracias por confirmar tu asistencia. ¡Te esperamos con mucha alegría
             en la fiesta de Joe Mateo!
           </p>
+          <button className="btn btn-primary completion-action-btn" onClick={() => navigate('/')}>
+            Entendido
+          </button>
         </div>
       </div>
     );
@@ -203,9 +206,6 @@ export default function Asistencia() {
         </form>
       </div>
 
-      {showToast && (
-        <div className="success-toast">✅ ¡Asistencia confirmada con éxito!</div>
-      )}
     </div>
   );
 }
