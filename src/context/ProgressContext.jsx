@@ -4,14 +4,6 @@ const ProgressContext = createContext();
 
 const STEP_ORDER = ['inicio', 'asistencia', 'regalos', 'dedicatorias', 'juego'];
 
-const STEP_META = {
-  inicio: { label: 'Inicio' },
-  asistencia: { label: 'Asistencia' },
-  regalos: { label: 'Regalo' },
-  dedicatorias: { label: 'Dedicatoria' },
-  juego: { label: 'Juego' },
-};
-
 const SUCCESS_TOAST_BY_STEP = {
   asistencia: '✅ ¡Asistencia confirmada con éxito!',
   regalos: '🎁 ¡Regalo reservado con éxito!',
@@ -30,11 +22,6 @@ export function ProgressProvider({ children }) {
     };
   });
   const [showCongrats, setShowCongrats] = useState(false);
-  const [nextStepsModal, setNextStepsModal] = useState({
-    open: false,
-    completedStep: null,
-    remainingSteps: [],
-  });
   const [completionToast, setCompletionToast] = useState({
     open: false,
     message: '',
@@ -52,18 +39,7 @@ export function ProgressProvider({ children }) {
     setCompleted((prev) => {
       if (prev[step]) return prev;
 
-      const updated = { ...prev, [step]: true };
-      const remainingSteps = STEP_ORDER.filter((stepKey) => !updated[stepKey]);
-
-      if (step !== 'inicio' && remainingSteps.length > 0) {
-        setNextStepsModal({
-          open: true,
-          completedStep: step,
-          remainingSteps,
-        });
-      }
-
-      return updated;
+      return { ...prev, [step]: true };
     });
   };
 
@@ -74,10 +50,6 @@ export function ProgressProvider({ children }) {
       open: true,
       message,
     });
-  };
-
-  const closeNextStepsModal = () => {
-    setNextStepsModal((prev) => ({ ...prev, open: false }));
   };
 
   const closeCompletionToast = () => {
@@ -95,9 +67,6 @@ export function ProgressProvider({ children }) {
       totalSteps,
       showCongrats,
       setShowCongrats,
-      nextStepsModal,
-      closeNextStepsModal,
-      stepMeta: STEP_META,
       completionToast,
       closeCompletionToast,
       showStepSuccessToast,

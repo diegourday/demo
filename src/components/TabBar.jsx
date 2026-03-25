@@ -90,7 +90,7 @@ export default function TabBar() {
           <div className="progress-bar-container">
             <span className="progress-bar-label">Progreso</span>
             <div className="progress-bar-right">
-              <span className="progress-bar-count">{progressPercent}%</span>
+              <span className="progress-bar-count">{completedCount}/{totalSteps}</span>
               <button className="progress-help-btn" onClick={() => setShowHelp(true)} aria-label="Ayuda">?</button>
             </div>
           </div>

@@ -7,15 +7,6 @@ import Dedicatorias from './pages/Dedicatorias';
 import Juego from './pages/Juego';
 import Regalos from './pages/Regalos';
 import { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-
-const STEP_ROUTE = {
-  inicio: '/',
-  asistencia: '/asistencia',
-  regalos: '/regalos',
-  dedicatorias: '/dedicatorias',
-  juego: '/juego',
-};
 
 function CongratsModal() {
   const { showCongrats, setShowCongrats } = useProgress();
@@ -54,43 +45,6 @@ function CongratsModal() {
   );
 }
 
-function NextStepsModal() {
-  const { nextStepsModal, closeNextStepsModal, stepMeta } = useProgress();
-  const navigate = useNavigate();
-
-  if (!nextStepsModal.open) return null;
-
-  return (
-    <div className="modal-overlay" onClick={closeNextStepsModal}>
-      <div className="next-steps-modal" onClick={(e) => e.stopPropagation()}>
-        <div className="next-steps-header">
-          <h3>¡Paso completado!</h3>
-          <button className="help-modal-close" onClick={closeNextStepsModal}>✕</button>
-        </div>
-        <p className="next-steps-subtitle">
-          Completaste <strong>{stepMeta[nextStepsModal.completedStep]?.label}</strong>. Te faltan {nextStepsModal.remainingSteps.length} pasos para llegar al 100%.
-        </p>
-        <div className="next-steps-list">
-          {nextStepsModal.remainingSteps.map((step) => (
-            <button
-              key={step}
-              className="next-step-btn"
-              onClick={() => {
-                closeNextStepsModal();
-                navigate(STEP_ROUTE[step]);
-              }}
-            >
-              <span>{stepMeta[step]?.label}</span>
-              <span>Ir</span>
-            </button>
-          ))}
-        </div>
-        <button className="btn btn-primary" onClick={closeNextStepsModal}>Continuar luego</button>
-      </div>
-    </div>
-  );
-}
-
 function CompletionToast() {
   const { completionToast, closeCompletionToast } = useProgress();
 
@@ -119,7 +73,6 @@ export default function App() {
           </Routes>
           <TabBar />
           <CompletionToast />
-          <NextStepsModal />
           <CongratsModal />
         </div>
       </ProgressProvider>
