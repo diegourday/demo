@@ -12,14 +12,25 @@ const SUCCESS_TOAST_BY_STEP = {
 
 export function ProgressProvider({ children }) {
   const [completed, setCompleted] = useState(() => {
-    const saved = localStorage.getItem('progress');
-    return saved ? JSON.parse(saved) : {
+    const fallback = {
       inicio: false,
       asistencia: false,
       dedicatorias: false,
       juego: false,
       regalos: false,
     };
+
+    try {
+      const saved = localStorage.getItem('progress');
+      if (!saved) return fallback;
+
+      const parsed = JSON.parse(saved);
+      if (!parsed || typeof parsed !== 'object') return fallback;
+
+      return { ...fallback, ...parsed };
+    } catch {
+      return fallback;
+    }
   });
   const [showCongrats, setShowCongrats] = useState(false);
   const [completionToast, setCompletionToast] = useState({
@@ -28,7 +39,11 @@ export function ProgressProvider({ children }) {
   });
 
   useEffect(() => {
-    localStorage.setItem('progress', JSON.stringify(completed));
+    try {
+      localStorage.setItem('progress', JSON.stringify(completed));
+    } catch {
+      // Ignore storage failures.
+    }
     const allDone = STEP_ORDER.every((s) => completed[s]);
     if (allDone) {
       setShowCongrats(true);
