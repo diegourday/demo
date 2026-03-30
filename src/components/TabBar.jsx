@@ -86,17 +86,22 @@ export default function TabBar() {
   return (
     <>
       <div className="tab-bar-wrapper">
-        <div className="progress-section">
-          <div className="progress-bar-container">
-            <span className="progress-bar-label">Progreso</span>
-            <div className="progress-bar-right">
-              <span className="progress-bar-count">{completedCount}/{totalSteps}</span>
-              <button className="progress-help-btn" onClick={() => setShowHelp(true)} aria-label="Ayuda">?</button>
-            </div>
+        <div className="progress-section" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <span className="progress-bar-label" style={{ fontWeight: 600, fontSize: '13px' }}>Progreso</span>
+          <span className="progress-bar-count" style={{ fontSize: '12px', color: 'var(--text-light)' }}>
+            {completedCount}/{totalSteps}
+          </span>
+          <div className="progress-bar-track-wrapper" style={{ flex: 1, height: '6px', margin: 0, overflow: 'hidden', backgroundColor: 'var(--bg-secondary)', borderRadius: '999px' }}>
+            <div className="progress-fill" style={{ width: `${progressPercent}%`, height: '100%', backgroundColor: 'var(--primary)', transition: 'width 0.35s ease' }} />
           </div>
-          <div className="progress-bar-track-wrapper">
-            <div className="progress-fill" style={{ width: `${progressPercent}%` }} />
-          </div>
+          <button 
+            className="progress-help-btn" 
+            onClick={() => setShowHelp(true)} 
+            aria-label="Ayuda" 
+            style={{ width: '22px', height: '22px', borderRadius: '50%', border: '1px solid var(--border)', background: 'var(--bg-tertiary)', fontSize: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', flexShrink: 0 }}
+          >
+            ?
+          </button>
         </div>
         <nav className="tab-bar">
           {tabs.map((tab) => (
@@ -124,7 +129,7 @@ export default function TabBar() {
         <div className="help-modal-overlay" onClick={() => setShowHelp(false)}>
           <div className="help-modal" onClick={(e) => e.stopPropagation()}>
             <div className="help-modal-header">
-              <h3>¿Cómo completar el 100%?</h3>
+              <h3>¿Cómo completar el 5/5?</h3>
               <button className="help-modal-close" onClick={() => setShowHelp(false)}>✕</button>
             </div>
             <p className="help-modal-subtitle">Acceso rápido y estado de cada paso para completar toda la invitación:</p>

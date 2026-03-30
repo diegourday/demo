@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { ProgressProvider, useProgress } from './context/ProgressContext';
 import TabBar from './components/TabBar';
+import Footer from './components/Footer';
 import Inicio from './pages/Inicio';
 import Asistencia from './pages/Asistencia';
 import Dedicatorias from './pages/Dedicatorias';
@@ -71,6 +72,7 @@ export default function App() {
             <Route path="/juego" element={<Juego />} />
             <Route path="/regalos" element={<Regalos />} />
           </Routes>
+          <Footer />
           <TabBar />
           <CompletionToast />
           <CongratsModal />
