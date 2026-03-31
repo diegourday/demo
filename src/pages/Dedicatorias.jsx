@@ -1,40 +1,43 @@
-import { useState, useRef } from 'react';
-import { useProgress } from '../context/ProgressContext';
+import { useState, useRef } from "react";
+import { useProgress } from "../context/ProgressContext";
 
-const REACTIONS = ['❤️', '🥳', '🎉', '✨', '🥹'];
+const REACTIONS = ["❤️", "🥳", "🎉", "✨", "🥹"];
+const DEFAULT_AVATAR =
+  "https://images.squarespace-cdn.com/content/v1/631ba8eed2196a6795698665/3690ca61-6a9d-4c93-a2a5-83a5f2aa1648/2022-08-16-Trinet-0540-Martinez-Juan.jpg";
 
 const initialComments = [
   {
     id: 1,
-    name: 'Jon doe',
-    date: 'Hace 1 día',
-    text: 'el mejor evento!!!',
+    name: "Jon doe",
+    date: "Hace 1 día",
+    text: "el mejor evento!!!",
     avatar: null,
-    reactions: { '❤️': 0, '🥳': 0, '🎉': 0, '✨': 0, '🥹': 0 },
+    reactions: { "❤️": 0, "🥳": 0, "🎉": 0, "✨": 0, "🥹": 0 },
     isOwn: true,
   },
   {
     id: 2,
-    name: 'Devid prueba',
-    date: 'Hace 1 día',
-    text: 'Nsnsks',
+    name: "Devid prueba",
+    date: "Hace 1 día",
+    text: "Nsnsks",
     avatar: null,
-    reactions: { '❤️': 1, '🥳': 0, '🎉': 0, '✨': 0, '🥹': 0 },
+    reactions: { "❤️": 1, "🥳": 0, "🎉": 0, "✨": 0, "🥹": 0 },
     isOwn: false,
   },
 ];
 
 export default function Dedicatorias() {
   const [comments, setComments] = useState(initialComments);
-  const [form, setForm] = useState({ name: '', text: '' });
+  const [form, setForm] = useState({ name: "", text: "" });
   const [avatar, setAvatar] = useState(null);
   const [editingId, setEditingId] = useState(null);
   const [isDragging, setIsDragging] = useState(false);
+  const [isFormOpen, setIsFormOpen] = useState(false);
   const fileInputRef = useRef(null);
   const { markComplete, showStepSuccessToast } = useProgress();
 
   const handleAvatarFile = (file) => {
-    if (!file || !file.type.startsWith('image/')) return;
+    if (!file || !file.type.startsWith("image/")) return;
     const reader = new FileReader();
     reader.onload = (e) => setAvatar(e.target.result);
     reader.readAsDataURL(file);
@@ -61,8 +64,10 @@ export default function Dedicatorias() {
     if (editingId) {
       setComments((prev) =>
         prev.map((c) =>
-          c.id === editingId ? { ...c, name: form.name, text: form.text, avatar } : c
-        )
+          c.id === editingId
+            ? { ...c, name: form.name, text: form.text, avatar }
+            : c,
+        ),
       );
       setEditingId(null);
     } else {
@@ -70,27 +75,29 @@ export default function Dedicatorias() {
         {
           id: Date.now(),
           name: form.name,
-          date: 'Ahora',
+          date: "Ahora",
           text: form.text,
-          avatar,
-          reactions: { '❤️': 0, '🥳': 0, '🎉': 0, '✨': 0, '🥹': 0 },
+          avatar: avatar || DEFAULT_AVATAR,
+          reactions: { "❤️": 0, "🥳": 0, "🎉": 0, "✨": 0, "🥹": 0 },
           isOwn: true,
         },
         ...comments,
       ]);
     }
 
-    setForm({ name: '', text: '' });
+    setForm({ name: "", text: "" });
     setAvatar(null);
-    showStepSuccessToast('dedicatorias');
-    markComplete('dedicatorias');
+    setIsFormOpen(false);
+    showStepSuccessToast("dedicatorias");
+    markComplete("dedicatorias");
   };
 
   const handleEdit = (comment) => {
     setForm({ name: comment.name, text: comment.text });
     setAvatar(comment.avatar);
     setEditingId(comment.id);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    setIsFormOpen(true);
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const handleDelete = (id) => {
@@ -98,23 +105,35 @@ export default function Dedicatorias() {
   };
 
   const handleCancel = () => {
-    setForm({ name: '', text: '' });
+    setForm({ name: "", text: "" });
     setAvatar(null);
     setEditingId(null);
+    setIsFormOpen(false);
   };
 
   const handleReaction = (commentId, emoji) => {
     setComments((prev) =>
       prev.map((c) =>
         c.id === commentId
-          ? { ...c, reactions: { ...c.reactions, [emoji]: (c.reactions[emoji] || 0) + 1 } }
-          : c
-      )
+          ? {
+              ...c,
+              reactions: {
+                ...c.reactions,
+                [emoji]: (c.reactions[emoji] || 0) + 1,
+              },
+            }
+          : c,
+      ),
     );
   };
 
   const getInitials = (name) =>
-    name.split(' ').map((w) => w[0]).join('').slice(0, 2).toUpperCase();
+    name
+      .split(" ")
+      .map((w) => w[0])
+      .join("")
+      .slice(0, 2)
+      .toUpperCase();
 
   return (
     <div className="page-content">
@@ -122,11 +141,33 @@ export default function Dedicatorias() {
         <h2 className="section-title">Dedicatorias</h2>
         <p className="dedications-subtitle">Deja un mensaje especial</p>
 
+        {!isFormOpen ? (
+          <button
+            type="button"
+            className="btn btn-primary dedication-open-btn"
+            onClick={() => setIsFormOpen(true)}
+          >
+            ✍️ Escribir dedicatoria
+          </button>
+        ) : null}
+
         {/* Form */}
-        <div className="dedication-form">
+        <div className={`dedication-form ${isFormOpen ? "open" : "collapsed"}`}>
           <form onSubmit={handleSubmit}>
+            <div className="dedication-form-header">
+              <h3>
+                {editingId ? "Editar dedicatoria" : "Escribe tu dedicatoria"}
+              </h3>
+              <button
+                type="button"
+                className="btn-text-cancel dedication-close-btn"
+                onClick={handleCancel}
+              >
+                Cerrar
+              </button>
+            </div>
             <div
-              className={`avatar-upload-row ${isDragging ? 'dragging' : ''}`}
+              className={`avatar-upload-row ${isDragging ? "dragging" : ""}`}
               onDrop={handleDrop}
               onDragOver={handleDragOver}
               onDragLeave={handleDragLeave}
@@ -172,11 +213,15 @@ export default function Dedicatorias() {
               />
             </div>
             <div className="dedication-form-actions">
-              <button type="button" className="btn-text-cancel" onClick={handleCancel}>
+              <button
+                type="button"
+                className="btn-text-cancel"
+                onClick={handleCancel}
+              >
                 Cancelar
               </button>
               <button type="submit" className="btn btn-primary btn-publish">
-                {editingId ? 'Actualizar' : 'Publicar'}
+                {editingId ? "Actualizar" : "Publicar"}
               </button>
             </div>
           </form>
@@ -186,23 +231,26 @@ export default function Dedicatorias() {
         <div className="dedications-count">{comments.length} dedicatorias</div>
         <div className="comment-list">
           {comments.map((c) => (
-            <div key={c.id} className={`comment-card ${c.isOwn ? 'comment-own' : ''}`}>
+            <div
+              key={c.id}
+              className={`comment-card ${c.isOwn ? "comment-own" : ""}`}
+            >
               {c.isOwn && (
                 <div className="comment-own-header">
                   <span className="badge-own">TU DEDICATORIA</span>
                   <div className="comment-own-actions">
-                    <button onClick={() => handleEdit(c)} title="Editar">✏️</button>
-                    <button onClick={() => handleDelete(c.id)} title="Eliminar">🗑️</button>
+                    <button onClick={() => handleEdit(c)} title="Editar">
+                      ✏️
+                    </button>
+                    <button onClick={() => handleDelete(c.id)} title="Eliminar">
+                      🗑️
+                    </button>
                   </div>
                 </div>
               )}
               <div className="comment-header">
                 <div className="comment-avatar">
-                  {c.avatar ? (
-                    <img src={c.avatar} alt={c.name} />
-                  ) : (
-                    getInitials(c.name)
-                  )}
+                  <img src={c.avatar || DEFAULT_AVATAR} alt={c.name} />
                 </div>
                 <div>
                   <div className="comment-name">{c.name}</div>
@@ -214,11 +262,13 @@ export default function Dedicatorias() {
                 {REACTIONS.map((emoji) => (
                   <button
                     key={emoji}
-                    className={`reaction-btn ${c.reactions[emoji] > 0 ? 'active' : ''}`}
+                    className={`reaction-btn ${c.reactions[emoji] > 0 ? "active" : ""}`}
                     onClick={() => handleReaction(c.id, emoji)}
                   >
                     {emoji}
-                    {c.reactions[emoji] > 0 && <span>{c.reactions[emoji]}</span>}
+                    {c.reactions[emoji] > 0 && (
+                      <span>{c.reactions[emoji]}</span>
+                    )}
                   </button>
                 ))}
               </div>

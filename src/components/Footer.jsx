@@ -32,23 +32,6 @@ const WhatsAppIcon = () => (
   </svg>
 );
 
-const SupportIcon = () => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="24"
-    height="24"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-  >
-    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10" />
-    <path d="m9 12 2 2 4-4" />
-  </svg>
-);
-
 const FacebookIcon = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -110,14 +93,22 @@ export default function Footer() {
   return (
     <footer className="main-footer main-footer-compact">
       <div className="footer-container">
-        <div className="footer-header">
+        <section className="footer-promo">
+          <span className="footer-eyebrow">Diseña tu evento en minutos</span>
           <img
             src="/logo.svg"
             alt="Rumba77"
             loading="lazy"
             className="footer-logo-img"
           />
-          <h3 className="footer-slogan">¡Haz tu evento inolvidable!</h3>
+          <h3 className="footer-slogan">¿Te gusta esta invitación?</h3>
+          <p className="footer-copy">
+            Crea tu invitación web con confirmación de asistencia, dedicatorias
+            y más.
+          </p>
+          <p className="footer-copy footer-copy-strong">
+            Todo en un solo link.
+          </p>
           <a
             href="https://rumba77.com/crear-evento-gratis"
             target="_blank"
@@ -125,13 +116,16 @@ export default function Footer() {
             className="btn btn-primary footer-cta"
           >
             <CalendarPlus size={18} strokeWidth={2.2} aria-hidden="true" />
-            Crea tu evento gratis
+            Crear invitación gratis
           </a>
-        </div>
+        </section>
 
-        <div className="footer-content">
-          <div className="footer-section">
-            <h4>Centro de Ayuda</h4>
+        <div className="footer-columns">
+          <section
+            className="footer-section footer-contact"
+            aria-labelledby="footer-contact-title"
+          >
+            <h4>Contacto y soporte</h4>
             <div className="footer-item">
               <MailIcon />
               <a href="mailto:hola@rumba77.com">hola@rumba77.com</a>
@@ -146,64 +140,57 @@ export default function Footer() {
                 Envíanos un WhatsApp
               </a>
             </div>
-            <div className="footer-item">
-              <FacebookIcon />
+            <div className="footer-social-links" aria-label="Redes sociales">
               <a
                 href="https://facebook.com"
                 target="_blank"
                 rel="noopener noreferrer"
+                className="footer-social-link"
+                aria-label="Síguenos en Facebook"
+                title="Facebook"
               >
-                Síguenos en Facebook
+                <FacebookIcon />
               </a>
-            </div>
-            <div className="footer-item">
-              <InstagramIcon />
               <a
                 href="https://instagram.com"
                 target="_blank"
                 rel="noopener noreferrer"
+                className="footer-social-link"
+                aria-label="Síguenos en Instagram"
+                title="Instagram"
               >
-                Síguenos en Instagram
+                <InstagramIcon />
               </a>
-            </div>
-            <div className="footer-item">
-              <TikTokIcon />
               <a
                 href="https://tiktok.com"
                 target="_blank"
                 rel="noopener noreferrer"
+                className="footer-social-link"
+                aria-label="Síguenos en TikTok"
+                title="TikTok"
               >
-                Síguenos en TikTok
+                <TikTokIcon />
               </a>
             </div>
-          </div>
+          </section>
 
-          <div className="footer-section">
+          <section
+            className="footer-section footer-legal"
+            aria-labelledby="footer-legal-title"
+          >
             <h4>Legales</h4>
             <div className="footer-legal-links">
               <a href="/terminos-y-condiciones">Términos y condiciones</a>
               <a href="/politicas-de-privacidad">Políticas de privacidad</a>
             </div>
-            <a
-              href="/libro-reclamaciones"
-              className="libro-reclamaciones-link"
-              style={{
-                display: "inline-block",
-                borderRadius: "8px",
-                overflow: "hidden",
-                boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
-                transition: "transform 0.2s",
-                marginTop: "16px",
-                alignSelf: "flex-start",
-              }}
-            >
+            <a href="/libro-reclamaciones" className="libro-reclamaciones-link">
               <img
                 src="https://www.munisanjeronimocusco.gob.pe/wp-content/uploads/2023/07/libro-de-reclamaciones.jpg.webp"
                 alt="Libro de Reclamaciones"
-                style={{ width: "130px", display: "block" }}
+                className="libro-reclamaciones-img"
               />
             </a>
-          </div>
+          </section>
         </div>
 
         <div className="footer-bottom">

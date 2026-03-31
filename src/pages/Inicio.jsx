@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { CalendarDays, Check, MousePointerClick } from "lucide-react";
+import { CalendarDays, Check, Download, MousePointerClick } from "lucide-react";
 import { useProgress } from "../context/ProgressContext";
 
 function InfoSvgIcon({ name }) {
@@ -2267,11 +2267,17 @@ const itineraryItems = [
 const familyGroups = [
   {
     role: "Padres",
-    names: ["Jhonatan Echevarría", "Karenn Hernández"],
+    names: [
+      { label: "Jhonatan Echevarría", gender: "male" },
+      { label: "Karenn Hernández", gender: "female" },
+    ],
   },
   {
     role: "Padrinos",
-    names: ["Beatriz Flores", "Andrés Hernández"],
+    names: [
+      { label: "Beatriz Flores", gender: "female" },
+      { label: "Andrés Hernández", gender: "male" },
+    ],
   },
 ];
 
@@ -2728,8 +2734,13 @@ export default function Inicio() {
                 <span className="family-badge">{group.role}</span>
               </div>
               <div className="family-names">
-                {group.names.map((name) => (
-                  <p key={name}>{name}</p>
+                {group.names.map((person) => (
+                  <p
+                    key={person.label}
+                    className={person.gender === "female" ? "female" : "male"}
+                  >
+                    {person.label}
+                  </p>
                 ))}
               </div>
             </article>
@@ -2918,7 +2929,7 @@ export default function Inicio() {
                         }}
                       >
                         <span className="calendar-option-icon">
-                          <img src={option.icon} alt="" aria-hidden="true" />
+                          <Download aria-hidden="true" />
                         </span>
                         <span className="calendar-option-text">
                           <strong>{option.label}</strong>
