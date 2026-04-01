@@ -1,34 +1,69 @@
-import { useState } from 'react';
-import { NavLink, useNavigate } from 'react-router-dom';
-import { useProgress } from '../context/ProgressContext';
+import { useState } from "react";
+import { NavLink, useNavigate } from "react-router-dom";
+import { useProgress } from "../context/ProgressContext";
 
 const tabs = [
-  { path: '/', key: 'inicio', icon: 'home', label: 'Inicio' },
-  { path: '/asistencia', key: 'asistencia', icon: 'check', label: 'Asistencia' },
-  { path: '/regalos', key: 'regalos', icon: 'gift', label: 'Regalo' },
-  { path: '/dedicatorias', key: 'dedicatorias', icon: 'message', label: 'Dedicatoria' },
-  { path: '/juego', key: 'juego', icon: 'gamepad', label: 'Juego' },
+  { path: "/", key: "inicio", icon: "home", label: "Inicio" },
+  {
+    path: "/asistencia",
+    key: "asistencia",
+    icon: "check",
+    label: "Asistencia",
+  },
+  { path: "/regalos", key: "regalos", icon: "gift", label: "Regalo" },
+  {
+    path: "/dedicatorias",
+    key: "dedicatorias",
+    icon: "message",
+    label: "Dedicatoria",
+  },
+  { path: "/juego", key: "juego", icon: "gamepad", label: "Juego" },
 ];
 
 const helpSteps = [
-  { icon: 'home', key: 'inicio', label: 'Inicio', desc: 'Desplázate hasta el final de la invitación para completar este paso.' },
-  { icon: 'check', key: 'asistencia', label: 'Asistencia', desc: 'Llena y envía el formulario de confirmación.' },
-  { icon: 'gift', key: 'regalos', label: 'Regalo', desc: 'Elige y reserva un regalo de la lista.' },
-  { icon: 'message', key: 'dedicatorias', label: 'Dedicatoria', desc: 'Escribe y publica un mensaje para Joe Mateo.' },
-  { icon: 'gamepad', key: 'juego', label: 'Juego', desc: 'Participa en el juego y presiona "Listo".' },
+  {
+    icon: "home",
+    key: "inicio",
+    label: "Inicio",
+    desc: "Desplázate hasta el final de la invitación para completar este paso.",
+  },
+  {
+    icon: "check",
+    key: "asistencia",
+    label: "Asistencia",
+    desc: "Llena y envía el formulario de confirmación.",
+  },
+  {
+    icon: "gift",
+    key: "regalos",
+    label: "Regalo",
+    desc: "Elige y reserva un regalo de la lista.",
+  },
+  {
+    icon: "message",
+    key: "dedicatorias",
+    label: "Dedicatoria",
+    desc: "Escribe y publica un mensaje para Joe Mateo.",
+  },
+  {
+    icon: "gamepad",
+    key: "juego",
+    label: "Juego",
+    desc: 'Participa en el juego y presiona "Listo".',
+  },
 ];
 
 function TabSvgIcon({ name }) {
   const commonProps = {
-    viewBox: '0 0 24 24',
-    fill: 'none',
-    stroke: 'currentColor',
-    strokeWidth: '1.9',
-    strokeLinecap: 'round',
-    strokeLinejoin: 'round',
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: "1.9",
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
   };
 
-  if (name === 'home') {
+  if (name === "home") {
     return (
       <svg {...commonProps}>
         <path d="M3 10.5L12 3l9 7.5" />
@@ -37,7 +72,7 @@ function TabSvgIcon({ name }) {
     );
   }
 
-  if (name === 'check') {
+  if (name === "check") {
     return (
       <svg {...commonProps}>
         <rect x="4" y="4" width="16" height="16" rx="3" />
@@ -46,7 +81,7 @@ function TabSvgIcon({ name }) {
     );
   }
 
-  if (name === 'gift') {
+  if (name === "gift") {
     return (
       <svg {...commonProps}>
         <path d="M3 9h18v4H3z" />
@@ -58,7 +93,7 @@ function TabSvgIcon({ name }) {
     );
   }
 
-  if (name === 'message') {
+  if (name === "message") {
     return (
       <svg {...commonProps}>
         <path d="M4 5h16v11H8l-4 3V5z" />
@@ -86,19 +121,60 @@ export default function TabBar() {
   return (
     <>
       <div className="tab-bar-wrapper">
-        <div className="progress-section" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <span className="progress-bar-label" style={{ fontWeight: 600, fontSize: '13px' }}>Progreso</span>
-          <span className="progress-bar-count" style={{ fontSize: '12px', color: 'var(--text-light)' }}>
+        <div
+          className="progress-section"
+          style={{ display: "flex", alignItems: "center", gap: "8px" }}
+        >
+          <span
+            className="progress-bar-label"
+            style={{ fontWeight: 600, fontSize: "13px" }}
+          >
+            Progreso
+          </span>
+          <span
+            className="progress-bar-count"
+            style={{ fontSize: "12px", color: "var(--text-light)" }}
+          >
             {completedCount}/{totalSteps}
           </span>
-          <div className="progress-bar-track-wrapper" style={{ flex: 1, height: '6px', margin: 0, overflow: 'hidden', backgroundColor: 'var(--bg-secondary)', borderRadius: '999px' }}>
-            <div className="progress-fill" style={{ width: `${progressPercent}%`, height: '100%', backgroundColor: 'var(--primary)', transition: 'width 0.35s ease' }} />
+          <div
+            className="progress-bar-track-wrapper"
+            style={{
+              flex: 1,
+              height: "6px",
+              margin: 0,
+              overflow: "hidden",
+              backgroundColor: "var(--bg-secondary)",
+              borderRadius: "999px",
+            }}
+          >
+            <div
+              className="progress-fill"
+              style={{
+                width: `${progressPercent}%`,
+                height: "100%",
+                backgroundColor: "var(--primary)",
+                transition: "width 0.35s ease",
+              }}
+            />
           </div>
-          <button 
-            className="progress-help-btn" 
-            onClick={() => setShowHelp(true)} 
-            aria-label="Ayuda" 
-            style={{ width: '22px', height: '22px', borderRadius: '50%', border: '1px solid var(--border)', background: 'var(--bg-tertiary)', fontSize: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', flexShrink: 0 }}
+          <button
+            className="progress-help-btn"
+            onClick={() => setShowHelp(true)}
+            aria-label="Ayuda"
+            style={{
+              width: "22px",
+              height: "22px",
+              borderRadius: "50%",
+              border: "1px solid var(--border)",
+              background: "var(--bg-tertiary)",
+              fontSize: "12px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              cursor: "pointer",
+              flexShrink: 0,
+            }}
           >
             ?
           </button>
@@ -109,15 +185,15 @@ export default function TabBar() {
               key={tab.path}
               to={tab.path}
               className={({ isActive }) =>
-                `tab-item ${isActive ? 'active' : ''} ${completed[tab.key] ? 'completed' : ''}`
+                `tab-item ${isActive ? "active" : ""} ${completed[tab.key] ? "completed" : ""}`
               }
-              end={tab.path === '/'}
+              end={tab.path === "/"}
             >
               <div className="tab-icon-wrapper">
-                <span className="tab-icon"><TabSvgIcon name={tab.icon} /></span>
-                {completed[tab.key] && (
-                  <span className="tab-check">✓</span>
-                )}
+                <span className="tab-icon">
+                  <TabSvgIcon name={tab.icon} />
+                </span>
+                {completed[tab.key] && <span className="tab-check">✓</span>}
               </div>
               <span>{tab.label}</span>
             </NavLink>
@@ -130,28 +206,47 @@ export default function TabBar() {
           <div className="help-modal" onClick={(e) => e.stopPropagation()}>
             <div className="help-modal-header">
               <h3>¿Cómo completar el 5/5?</h3>
-              <button className="help-modal-close" onClick={() => setShowHelp(false)}>✕</button>
+              <button
+                className="modal-close-btn help-modal-close"
+                onClick={() => setShowHelp(false)}
+              >
+                ✕
+              </button>
             </div>
-            <p className="help-modal-subtitle">Acceso rápido y estado de cada paso para completar toda la invitación:</p>
+            <p className="help-modal-subtitle">
+              Acceso rápido y estado de cada paso para completar toda la
+              invitación:
+            </p>
             <div className="help-steps-list">
               {helpSteps.map((step) => (
-                <div key={step.key} className={`help-step-item ${completed[step.key] ? 'done' : ''}`}>
+                <div
+                  key={step.key}
+                  className={`help-step-item ${completed[step.key] ? "done" : ""}`}
+                >
                   <div className="help-step-icon">
-                    {completed[step.key] ? '✓' : <TabSvgIcon name={step.icon} />}
+                    {completed[step.key] ? (
+                      "✓"
+                    ) : (
+                      <TabSvgIcon name={step.icon} />
+                    )}
                   </div>
                   <div className="help-step-info">
                     <strong>{step.label}</strong>
                     <p>{step.desc}</p>
                   </div>
                   <div className="help-step-actions">
-                    <span className={`help-step-status ${completed[step.key] ? 'done' : 'pending'}`}>
-                      {completed[step.key] ? 'Completado' : 'Pendiente'}
+                    <span
+                      className={`help-step-status ${completed[step.key] ? "done" : "pending"}`}
+                    >
+                      {completed[step.key] ? "Completado" : "Pendiente"}
                     </span>
                     <button
                       className="help-step-go"
                       onClick={() => {
                         setShowHelp(false);
-                        navigate(tabs.find((tab) => tab.key === step.key)?.path || '/');
+                        navigate(
+                          tabs.find((tab) => tab.key === step.key)?.path || "/",
+                        );
                       }}
                     >
                       Ir
@@ -160,7 +255,11 @@ export default function TabBar() {
                 </div>
               ))}
             </div>
-            <button className="btn btn-primary" style={{ marginTop: 16 }} onClick={() => setShowHelp(false)}>
+            <button
+              className="btn btn-primary"
+              style={{ marginTop: 16 }}
+              onClick={() => setShowHelp(false)}
+            >
               Entendido
             </button>
           </div>

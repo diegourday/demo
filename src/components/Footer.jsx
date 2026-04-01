@@ -105,9 +105,6 @@ export default function Footer() {
             Crea tu invitación web con confirmación de asistencia, lista de
             regalos y más.
           </p>
-          <p className="footer-copy footer-copy-strong">
-            Todo en un solo link.
-          </p>
           <a
             href="https://rumba77.com/crear-evento-gratis"
             target="_blank"
@@ -125,20 +122,6 @@ export default function Footer() {
             aria-labelledby="footer-contact-title"
           >
             <h4>Contacto y soporte</h4>
-            <div className="footer-item">
-              <MailIcon />
-              <a href="mailto:hola@rumba77.com">hola@rumba77.com</a>
-            </div>
-            <div className="footer-item">
-              <WhatsAppIcon />
-              <a
-                href="https://wa.me/51999999999"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Envíanos un WhatsApp
-              </a>
-            </div>
             <div className="footer-social-links" aria-label="Redes sociales">
               <a
                 href="https://facebook.com"
@@ -171,6 +154,20 @@ export default function Footer() {
                 <TikTokIcon />
               </a>
             </div>
+            <div className="footer-item">
+              <MailIcon />
+              <a href="mailto:hola@rumba77.com">hola@rumba77.com</a>
+            </div>
+            <div className="footer-item">
+              <WhatsAppIcon />
+              <a
+                href="https://wa.me/51999999999"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Envíanos un WhatsApp
+              </a>
+            </div>
           </section>
 
           <section
@@ -181,6 +178,10 @@ export default function Footer() {
             <div className="footer-legal-links">
               <a href="/terminos-y-condiciones">Términos y condiciones</a>
               <a href="/politicas-de-privacidad">Políticas de privacidad</a>
+              <a href="/politica-de-cookies">Política de cookies</a>
+              <a href="/consentimiento-y-disclaimers">
+                Consentimiento y disclaimers
+              </a>
             </div>
             <a href="/libro-reclamaciones" className="libro-reclamaciones-link">
               <img

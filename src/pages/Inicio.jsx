@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { CalendarDays, Check, Download, MousePointerClick } from "lucide-react";
+import { CalendarDays, Check, Download } from "lucide-react";
 import { useProgress } from "../context/ProgressContext";
 
 function InfoSvgIcon({ name }) {
@@ -2691,9 +2691,6 @@ export default function Inicio() {
               }}
               onClick={() => setSelectedInfoCardIndex(index)}
             >
-              <span className="info-card-click-badge" aria-hidden="true">
-                <MousePointerClick size={14} strokeWidth={2.3} />
-              </span>
               <div className="info-card-icon">{card.iconComponent}</div>
               {card.displayTitle}
             </div>
@@ -2786,14 +2783,8 @@ export default function Inicio() {
               <div className="photo-modal" onClick={(e) => e.stopPropagation()}>
                 <button
                   type="button"
-                  className="photo-modal-close"
+                  className="modal-close-btn photo-modal-close"
                   onClick={() => setSelectedPhotoIndex(null)}
-                  style={{
-                    top: "15px",
-                    right: "15px",
-                    color: "var(--primary)",
-                    background: "rgba(255, 255, 255, 0.8)",
-                  }}
                 >
                   ✕
                 </button>
@@ -2848,7 +2839,7 @@ export default function Inicio() {
                 onClick={(e) => e.stopPropagation()}
               >
                 <button
-                  className="info-modal-close"
+                  className="modal-close-btn info-modal-close"
                   onClick={() => setSelectedInfoCardIndex(null)}
                 >
                   ✕
@@ -2899,7 +2890,7 @@ export default function Inicio() {
             >
               <button
                 type="button"
-                className="calendar-modal-close"
+                className="modal-close-btn calendar-modal-close"
                 onClick={() => setSelectedCalendarOpen(false)}
               >
                 ✕
@@ -2928,7 +2919,11 @@ export default function Inicio() {
                       >
                         <span className="calendar-option-icon">
                           {option.label === "Descargar Calendario" ? (
-                            <Download size={16} strokeWidth={2.4} aria-hidden="true" />
+                            <Download
+                              size={16}
+                              strokeWidth={2.4}
+                              aria-hidden="true"
+                            />
                           ) : (
                             <img src={option.icon} alt="" aria-hidden="true" />
                           )}

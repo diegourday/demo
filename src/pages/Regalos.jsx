@@ -219,7 +219,7 @@ export default function Regalos() {
         <div className="modal-overlay" onClick={() => setSelectedGift(null)}>
           <div className="gift-modal" onClick={(e) => e.stopPropagation()}>
             <button
-              className="gift-modal-close"
+              className="modal-close-btn gift-modal-close"
               onClick={() => setSelectedGift(null)}
             >
               ✕
