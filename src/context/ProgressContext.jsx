@@ -1,14 +1,32 @@
-import { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useState, useEffect } from "react";
+import confetti from "canvas-confetti";
 
 const ProgressContext = createContext();
 
-const STEP_ORDER = ['inicio', 'asistencia', 'regalos', 'dedicatorias', 'juego'];
+const STEP_ORDER = ["inicio", "asistencia", "regalos", "dedicatorias", "juego"];
 
 const SUCCESS_TOAST_BY_STEP = {
-  asistencia: '✅ ¡Asistencia confirmada con éxito!',
-  regalos: '🎁 ¡Regalo reservado con éxito!',
-  dedicatorias: '💌 ¡Dedicatoria enviada con éxito!',
+  inicio: "✅ ¡Ya completaste el inicio con éxito!",
+  asistencia: "✅ ¡Asistencia confirmada con éxito!",
+  regalos: "🎁 ¡Regalo reservado con éxito!",
+  dedicatorias: "💌 ¡Dedicatoria enviada con éxito!",
+  juego: "🎮 ¡Juego completado con éxito!",
 };
+
+function fireCelebrationConfetti() {
+  if (typeof window === "undefined") return;
+
+  const burst = {
+    particleCount: 80,
+    spread: 70,
+    origin: { y: 0.7 },
+    colors: ["#0051df", "#5a32ff", "#ff6fae", "#ffd700", "#ffffff"],
+  };
+
+  confetti({ ...burst, scalar: 1.05, startVelocity: 30 });
+  confetti({ ...burst, angle: 60, origin: { x: 0, y: 0.75 }, scalar: 0.9 });
+  confetti({ ...burst, angle: 120, origin: { x: 1, y: 0.75 }, scalar: 0.9 });
+}
 
 export function ProgressProvider({ children }) {
   const [completed, setCompleted] = useState(() => {
@@ -21,11 +39,11 @@ export function ProgressProvider({ children }) {
     };
 
     try {
-      const saved = localStorage.getItem('progress');
+      const saved = localStorage.getItem("progress");
       if (!saved) return fallback;
 
       const parsed = JSON.parse(saved);
-      if (!parsed || typeof parsed !== 'object') return fallback;
+      if (!parsed || typeof parsed !== "object") return fallback;
 
       return { ...fallback, ...parsed };
     } catch {
@@ -35,12 +53,12 @@ export function ProgressProvider({ children }) {
   const [showCongrats, setShowCongrats] = useState(false);
   const [completionToast, setCompletionToast] = useState({
     open: false,
-    message: '',
+    message: "",
   });
 
   useEffect(() => {
     try {
-      localStorage.setItem('progress', JSON.stringify(completed));
+      localStorage.setItem("progress", JSON.stringify(completed));
     } catch {
       // Ignore storage failures.
     }
@@ -53,6 +71,8 @@ export function ProgressProvider({ children }) {
   const markComplete = (step) => {
     setCompleted((prev) => {
       if (prev[step]) return prev;
+
+      fireCelebrationConfetti();
 
       return { ...prev, [step]: true };
     });
@@ -68,24 +88,26 @@ export function ProgressProvider({ children }) {
   };
 
   const closeCompletionToast = () => {
-    setCompletionToast({ open: false, message: '' });
+    setCompletionToast({ open: false, message: "" });
   };
 
   const completedCount = STEP_ORDER.filter((s) => completed[s]).length;
   const totalSteps = STEP_ORDER.length;
 
   return (
-    <ProgressContext.Provider value={{
-      completed,
-      markComplete,
-      completedCount,
-      totalSteps,
-      showCongrats,
-      setShowCongrats,
-      completionToast,
-      closeCompletionToast,
-      showStepSuccessToast,
-    }}>
+    <ProgressContext.Provider
+      value={{
+        completed,
+        markComplete,
+        completedCount,
+        totalSteps,
+        showCongrats,
+        setShowCongrats,
+        completionToast,
+        closeCompletionToast,
+        showStepSuccessToast,
+      }}
+    >
       {children}
     </ProgressContext.Provider>
   );

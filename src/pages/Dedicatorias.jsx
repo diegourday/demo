@@ -127,14 +127,6 @@ export default function Dedicatorias() {
     );
   };
 
-  const getInitials = (name) =>
-    name
-      .split(" ")
-      .map((w) => w[0])
-      .join("")
-      .slice(0, 2)
-      .toUpperCase();
-
   return (
     <div className="page-content">
       <div className="dedications-page">
@@ -158,13 +150,6 @@ export default function Dedicatorias() {
               <h3>
                 {editingId ? "Editar dedicatoria" : "Escribe tu dedicatoria"}
               </h3>
-              <button
-                type="button"
-                className="btn-text-cancel dedication-close-btn"
-                onClick={handleCancel}
-              >
-                Cerrar
-              </button>
             </div>
             <div
               className={`avatar-upload-row ${isDragging ? "dragging" : ""}`}

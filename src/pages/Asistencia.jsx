@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { useProgress } from "../context/ProgressContext";
 
 const STORAGE_KEY = "asistencia-response-v1";
@@ -76,7 +75,6 @@ export default function Asistencia() {
   );
   const [isEditing, setIsEditing] = useState(false);
   const { completed, markComplete, showStepSuccessToast } = useProgress();
-  const navigate = useNavigate();
   const [form, setForm] = useState(
     () => savedAttendance?.form ?? initialFormState,
   );
@@ -122,19 +120,14 @@ export default function Asistencia() {
       <div className="page-content">
         <div className="asistencia-history-page">
           <div className="asistencia-history-card">
-            <h2 className="asistencia-history-title">Ya respondiste</h2>
+            <h2 className="asistencia-history-title">
+              Gracias por tu confirmar tu asistencia
+            </h2>
             <p className="asistencia-history-subtitle">
               ¿Quieres enviar una nueva confirmación de asistencia?
             </p>
 
             <div className="modal-actions attendance-actions">
-              <button
-                type="button"
-                className="btn btn-cancel"
-                onClick={() => navigate("/")}
-              >
-                No, cerrar
-              </button>
               <button
                 type="button"
                 className="btn btn-primary"

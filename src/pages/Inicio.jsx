@@ -2294,7 +2294,7 @@ const photoItems = [
 ];
 
 export default function Inicio() {
-  const { completed, markComplete } = useProgress();
+  const { completed, markComplete, showStepSuccessToast } = useProgress();
   const bottomRef = useRef(null);
   const [selectedPhotoIndex, setSelectedPhotoIndex] = useState(null);
   const [selectedInfoCardIndex, setSelectedInfoCardIndex] = useState(null);
@@ -2478,6 +2478,7 @@ export default function Inicio() {
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
+          showStepSuccessToast("inicio");
           markComplete("inicio");
         }
       },
@@ -2485,7 +2486,7 @@ export default function Inicio() {
     );
     if (bottomRef.current) observer.observe(bottomRef.current);
     return () => observer.disconnect();
-  }, [completed.inicio, markComplete]);
+  }, [completed.inicio, markComplete, showStepSuccessToast]);
 
   return (
     <div className="page-content home-page-content">

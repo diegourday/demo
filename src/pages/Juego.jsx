@@ -1,8 +1,8 @@
-import { useProgress } from '../context/ProgressContext';
-import { useNavigate } from 'react-router-dom';
+import { useProgress } from "../context/ProgressContext";
+import { useNavigate } from "react-router-dom";
 
 export default function Juego() {
-  const { completed, markComplete } = useProgress();
+  const { completed, markComplete, showStepSuccessToast } = useProgress();
   const navigate = useNavigate();
 
   return (
@@ -20,7 +20,7 @@ export default function Juego() {
             </div>
             <button
               className="btn btn-primary completion-action-btn"
-              onClick={() => navigate('/')}
+              onClick={() => navigate("/")}
             >
               Entendido
             </button>
@@ -29,7 +29,10 @@ export default function Juego() {
           <button
             className="btn btn-primary"
             style={{ marginTop: 24 }}
-            onClick={() => markComplete('juego')}
+            onClick={() => {
+              showStepSuccessToast("juego");
+              markComplete("juego");
+            }}
           >
             ✅ Listo
           </button>

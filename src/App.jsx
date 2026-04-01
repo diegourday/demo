@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { ProgressProvider, useProgress } from "./context/ProgressContext";
 import TabBar from "./components/TabBar";
 import Footer from "./components/Footer";
@@ -65,10 +65,21 @@ function CompletionToast() {
   return <div className="success-toast">{completionToast.message}</div>;
 }
 
+function ScrollToTop() {
+  const location = useLocation();
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+  }, [location.pathname]);
+
+  return null;
+}
+
 export default function App() {
   return (
     <BrowserRouter>
       <ProgressProvider>
+        <ScrollToTop />
         <div className="app-container">
           <TabBar />
           <div className="tab-bar-spacer" aria-hidden="true" />
