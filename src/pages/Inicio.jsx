@@ -2570,21 +2570,18 @@ export default function Inicio() {
             <span className="chip-icon">
               <CelebrationSvgIcon name="calendar_month" />
             </span>
-            <strong>Día</strong>
             <p>Martes 31 de marzo</p>
           </div>
           <div className="celebration-chip">
             <span className="chip-icon">
               <CelebrationSvgIcon name="alarm" />
             </span>
-            <strong>Hora</strong>
             <p>04:00 pm</p>
           </div>
           <div className="celebration-chip">
             <span className="chip-icon">
               <CelebrationSvgIcon name="location_on" />
             </span>
-            <strong>Dirección</strong>
             <p>Local Redenk, San Luis - Cañete</p>
           </div>
         </div>
@@ -2604,7 +2601,7 @@ export default function Inicio() {
             href="https://www.google.com/maps?q=-13.056473,-76.42911&z=15"
             target="_blank"
             rel="noopener noreferrer"
-            className="btn btn-outline btn-map"
+            className="btn btn-outline btn-map text-nowrap"
           >
             <span className="btn-icon" aria-hidden="true">
               <img
@@ -2613,7 +2610,7 @@ export default function Inicio() {
                 alt=""
               />
             </span>
-            Google Maps
+            <p className="text-nowrap">Google Maps</p>
           </a>
           <a
             href="https://waze.com/ul?q=-13.056473,-76.42911"
@@ -2929,7 +2926,11 @@ export default function Inicio() {
                         }}
                       >
                         <span className="calendar-option-icon">
-                          <Download aria-hidden="true" />
+                          {option.label === "Descargar Calendario" ? (
+                            <Download size={16} strokeWidth={2.4} aria-hidden="true" />
+                          ) : (
+                            <img src={option.icon} alt="" aria-hidden="true" />
+                          )}
                         </span>
                         <span className="calendar-option-text">
                           <strong>{option.label}</strong>

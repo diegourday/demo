@@ -94,7 +94,6 @@ export default function Footer() {
     <footer className="main-footer main-footer-compact">
       <div className="footer-container">
         <section className="footer-promo">
-          <span className="footer-eyebrow">Diseña tu evento en minutos</span>
           <img
             src="/logo.svg"
             alt="Rumba77"
@@ -103,8 +102,8 @@ export default function Footer() {
           />
           <h3 className="footer-slogan">¿Te gusta esta invitación?</h3>
           <p className="footer-copy">
-            Crea tu invitación web con confirmación de asistencia, dedicatorias
-            y más.
+            Crea tu invitación web con confirmación de asistencia, lista de
+            regalos y más.
           </p>
           <p className="footer-copy footer-copy-strong">
             Todo en un solo link.
