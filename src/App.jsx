@@ -56,7 +56,7 @@ function CompletionToast() {
 
   useEffect(() => {
     if (!completionToast.open) return;
-    const timer = setTimeout(() => closeCompletionToast(), 2800);
+    const timer = setTimeout(() => closeCompletionToast(), 5000);
     return () => clearTimeout(timer);
   }, [completionToast.open, closeCompletionToast]);
 

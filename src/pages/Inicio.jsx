@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { CalendarDays, Check, Download } from "lucide-react";
+import { ArrowDown, CalendarDays, Check, Download } from "lucide-react";
 import { useProgress } from "../context/ProgressContext";
 
 function InfoSvgIcon({ name }) {
@@ -2299,6 +2299,16 @@ export default function Inicio() {
   const [selectedPhotoIndex, setSelectedPhotoIndex] = useState(null);
   const [selectedInfoCardIndex, setSelectedInfoCardIndex] = useState(null);
   const [selectedCalendarOpen, setSelectedCalendarOpen] = useState(false);
+  const scrollTipKey = "rumba77-scroll-tip-seen";
+  const [showScrollTip, setShowScrollTip] = useState(() => {
+    if (typeof window === "undefined") return false;
+
+    try {
+      return !window.localStorage.getItem(scrollTipKey);
+    } catch {
+      return true;
+    }
+  });
 
   const infoCardsData = [
     {
@@ -2363,6 +2373,21 @@ export default function Inicio() {
   const calendarLocation = encodeURIComponent(calendarEvent.location);
   const googleCalendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${calendarText}&dates=${calendarEvent.start}/${calendarEvent.end}&details=${calendarDetails}&location=${calendarLocation}&ctz=America/Lima`;
   const outlookCalendarUrl = `https://outlook.live.com/calendar/0/deeplink/compose?subject=${calendarText}&body=${calendarDetails}&startdt=2026-03-31T16:00:00&enddt=2026-03-31T21:00:00&location=${calendarLocation}`;
+
+  useEffect(() => {
+    try {
+      window.localStorage.setItem(scrollTipKey, "1");
+    } catch {
+      // ignore storage failures
+    }
+
+    if (!showScrollTip) {
+      return undefined;
+    }
+
+    const timer = window.setTimeout(() => setShowScrollTip(false), 5000);
+    return () => window.clearTimeout(timer);
+  }, [scrollTipKey, showScrollTip]);
 
   const downloadCalendarFile = () => {
     const ics = [
@@ -2515,6 +2540,17 @@ export default function Inicio() {
           <div className="hero-text-block">
             <p className="hero-subtitle">Mi primer añito</p>
             <h2>Joe Mateo</h2>
+            {showScrollTip && (
+              <button
+                type="button"
+                className="hero-scroll-tip"
+                onClick={() => setShowScrollTip(false)}
+                aria-label="Desliza para ver el evento"
+              >
+                <ArrowDown size={14} strokeWidth={2.5} aria-hidden="true" />
+                <span>Desliza para ver el evento</span>
+              </button>
+            )}
             <p className="hero-extra">Faltan</p>
             <div className="countdown">
               <div className="countdown-item">

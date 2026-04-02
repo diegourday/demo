@@ -121,7 +121,7 @@ export default function Asistencia() {
         <div className="asistencia-history-page">
           <div className="asistencia-history-card">
             <h2 className="asistencia-history-title">
-              Gracias por tu confirmar tu asistencia
+              Gracias por confirmar tu asistencia
             </h2>
             <p className="asistencia-history-subtitle">
               ¿Quieres enviar una nueva confirmación de asistencia?
