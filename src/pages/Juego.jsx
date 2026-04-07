@@ -340,15 +340,14 @@ export default function Juego() {
       <div className="juego-page quiz-game-page">
         {stage === "ranking" && (
           <>
-            <section className="juego-ranking-card primary-ranking">
-              <div className="juego-section-heading">
-                <div>
-                  <h3>Ranking de invitados</h3>
-                  <p>Juega, suma XP y escala posiciones.</p>
-                </div>
-                <Trophy size={24} strokeWidth={2.4} color="#ffc800" />
-              </div>
+            <div className="page-header-copy juego-header-copy">
+              <h2 className="section-title">Ranking de invitados</h2>
+              <p className="dedications-subtitle">
+                Juega, suma XP y escala posiciones.
+              </p>
+            </div>
 
+            <section className="juego-ranking-card primary-ranking">
               <div className="juego-ranking-list">
                 {rankingPlayers.map((player) => (
                   <RankingRow key={player.id} {...player} />
@@ -562,11 +561,6 @@ export default function Juego() {
               {isQuizComplete ? "Ver resultado" : "Siguiente pregunta"}
               <ArrowRight size={18} strokeWidth={2.2} />
             </button>
-
-            <div className="juego-score-chip">
-              <Trophy size={16} strokeWidth={2.3} />
-              <span>+{score} pts acumulados</span>
-            </div>
           </section>
         )}
 
@@ -610,39 +604,6 @@ export default function Juego() {
               <div>
                 <span>Correctas</span>
                 <strong>{correctCount}</strong>
-              </div>
-            </div>
-
-            <div className="juego-result-breakdown">
-              <h3 className="juego-breakdown-title">Tus Respuestas</h3>
-              <div className="juego-breakdown-list">
-                {QUESTIONS.map((q, idx) => {
-                  const userAnswer = userAnswers[idx];
-                  const isCorrect = userAnswer === q.correctIndex;
-                  return (
-                    <div
-                      key={q.id}
-                      className={`juego-breakdown-item ${isCorrect ? "correct" : "incorrect"}`}
-                    >
-                      <p className="juego-breakdown-q">
-                        <strong>{idx + 1}.</strong> {q.title}
-                      </p>
-                      <div className="juego-breakdown-ans">
-                        <span>
-                          Seleccionaste:{" "}
-                          {userAnswer !== undefined
-                            ? q.options[userAnswer]
-                            : "—"}
-                        </span>
-                      </div>
-                      {!isCorrect && (
-                        <div className="juego-breakdown-correct">
-                          <span>✅ Correcta: {q.options[q.correctIndex]}</span>
-                        </div>
-                      )}
-                    </div>
-                  );
-                })}
               </div>
             </div>
 

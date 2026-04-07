@@ -2551,10 +2551,10 @@ export default function Inicio() {
             type="button"
             className="hero-scroll-tip"
             onClick={() => setShowScrollTip(false)}
-            aria-label="Desliza para ver el evento"
+            aria-label="Desliza para ver la invitación"
           >
             <ArrowDown size={14} strokeWidth={2.5} aria-hidden="true" />
-            <span>Desliza para ver el evento</span>
+            <span>Desliza para ver la invitación</span>
           </button>
         )}
       </section>

@@ -131,8 +131,10 @@ export default function Dedicatorias() {
   return (
     <div className="page-content">
       <div className="dedications-page">
-        <h2 className="section-title">Dedicatorias</h2>
-        <p className="dedications-subtitle">Deja un mensaje especial</p>
+        <div className="page-header-copy">
+          <h2 className="section-title">Dedicatorias</h2>
+          <p className="dedications-subtitle">Deja un mensaje especial</p>
+        </div>
 
         {!isFormOpen ? (
           <button
@@ -166,13 +168,16 @@ export default function Dedicatorias() {
                   <span className="avatar-placeholder">👤</span>
                 )}
               </div>
-              <button
-                type="button"
-                className="btn-upload-avatar"
-                onClick={() => fileInputRef.current?.click()}
-              >
-                Agregar foto
-              </button>
+              <div className="avatar-upload-copy">
+                <button
+                  type="button"
+                  className="btn-upload-avatar"
+                  onClick={() => fileInputRef.current?.click()}
+                >
+                  Agregar foto de perfil
+                </button>
+                <span className="avatar-upload-note">(opcional)</span>
+              </div>
               <input
                 ref={fileInputRef}
                 type="file"
