@@ -18,6 +18,45 @@ import {
 import { useNavigate } from "react-router-dom";
 import { useProgress } from "../context/ProgressContext";
 
+const playGameSound = (type = "success") => {
+  try {
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    if (!AudioContext) return;
+    const ctx = new AudioContext();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+
+    const now = ctx.currentTime;
+    if (type === "success") {
+      osc.type = "sine";
+      osc.frequency.setValueAtTime(600, now);
+      osc.frequency.exponentialRampToValueAtTime(1000, now + 0.1);
+      gain.gain.setValueAtTime(0.2, now);
+      gain.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
+      osc.start(now);
+      osc.stop(now + 0.15);
+    } else if (type === "levelup") {
+      osc.type = "triangle";
+      osc.frequency.setValueAtTime(440, now);
+      osc.frequency.setValueAtTime(554, now + 0.1);
+      osc.frequency.setValueAtTime(659, now + 0.2);
+
+      gain.gain.setValueAtTime(0.2, now);
+      gain.gain.setValueAtTime(0.2, now + 0.1);
+      gain.gain.setValueAtTime(0.2, now + 0.2);
+      gain.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
+
+      osc.start(now);
+      osc.stop(now + 0.45);
+    }
+  } catch (e) {
+    // ignore
+  }
+};
+
 const BASE_SCORE = 110;
 
 const RANKING_PLAYERS = [
@@ -114,9 +153,15 @@ function RankingRow({ rank, name, role, points, highlighted, photo }) {
     .join("")
     .toUpperCase();
 
+  const rankIcon =
+    rank === 1 ? "🥇" : rank === 2 ? "🥈" : rank === 3 ? "🥉" : rank;
+  const rankClass = rank <= 3 ? `rank-${rank}` : "rank-other";
+
   return (
-    <article className={`juego-rank-item ${highlighted ? "highlighted" : ""}`}>
-      <div className="juego-rank-position">#{rank}</div>
+    <article
+      className={`juego-rank-item ${highlighted ? "highlighted" : ""} ${rankClass}`}
+    >
+      <div className="juego-rank-position">{rankIcon}</div>
       <div className="juego-rank-avatar">
         {photo ? <img src={photo} alt={name} /> : <span>{initials}</span>}
       </div>
@@ -126,7 +171,7 @@ function RankingRow({ rank, name, role, points, highlighted, photo }) {
       </div>
       <div className="juego-rank-points">
         <strong>{points}</strong>
-        <span>pts</span>
+        <span>XP</span>
       </div>
     </article>
   );
@@ -144,9 +189,21 @@ export default function Juego() {
   const [profileError, setProfileError] = useState("");
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState(null);
-  const [revealState, setRevealState] = useState(null);
-  const [score, setScore] = useState(BASE_SCORE);
-  const [correctCount, setCorrectCount] = useState(0);
+  const [userAnswers, setUserAnswers] = useState([]);
+  const [timeLeft, setTimeLeft] = useState(30);
+
+  useEffect(() => {
+    let timer;
+    if (stage === "quiz" && timeLeft > 0) {
+      timer = setTimeout(() => {
+        setTimeLeft((prev) => prev - 1);
+      }, 1000);
+    } else if (stage === "quiz" && timeLeft === 0) {
+      // Auto-submit as skipped or null
+      handleTimeOut();
+    }
+    return () => clearTimeout(timer);
+  }, [stage, timeLeft, currentQuestionIndex]);
 
   useEffect(() => {
     return () => {
@@ -165,6 +222,11 @@ export default function Juego() {
         .map(([step, meta]) => ({ step, ...meta })),
     [completed],
   );
+
+  const correctCount = userAnswers.filter(
+    (ans, idx) => ans === QUESTIONS[idx].correctIndex,
+  ).length;
+  const score = BASE_SCORE + correctCount * 20;
 
   const rankingPlayers = useMemo(() => {
     const player = {
@@ -185,7 +247,6 @@ export default function Juego() {
   const currentQuestion = QUESTIONS[currentQuestionIndex];
   const QuestionIcon = currentQuestion.icon;
   const isQuizComplete = currentQuestionIndex === QUESTIONS.length - 1;
-  const answered = revealState !== null;
   const currentProgress = currentQuestionIndex + 1;
   const totalQuestions = QUESTIONS.length;
 
@@ -197,6 +258,7 @@ export default function Juego() {
 
     setProfileError("");
     setStage("quiz");
+    setTimeLeft(30);
   };
 
   const handlePhotoChange = (event) => {
@@ -212,38 +274,41 @@ export default function Juego() {
   };
 
   const handleSelectAnswer = (index) => {
-    if (answered) return;
     setSelectedAnswer(index);
   };
 
   const handleSubmitAnswer = () => {
-    if (selectedAnswer === null || answered) return;
+    if (selectedAnswer === null) return;
 
-    const isCorrect = selectedAnswer === currentQuestion.correctIndex;
+    // Save answer and determine next stage
+    const nextAnswers = [...userAnswers, selectedAnswer];
+    setUserAnswers(nextAnswers);
 
-    if (isCorrect) {
-      setScore((prev) => prev + 20);
-      setCorrectCount((prev) => prev + 1);
+    if (isQuizComplete) {
+      playGameSound("levelup");
+      setStage("result");
+    } else {
+      playGameSound("success");
+      setCurrentQuestionIndex((prev) => prev + 1);
+      setSelectedAnswer(null);
+      setTimeLeft(30);
     }
-
-    setRevealState({
-      selectedIndex: selectedAnswer,
-      correctIndex: currentQuestion.correctIndex,
-      isCorrect,
-    });
   };
 
-  const handleNextQuestion = () => {
-    if (!answered) return;
+  const handleTimeOut = () => {
+    if (stage !== "quiz") return;
+
+    // Auto-advance with null answer
+    const nextAnswers = [...userAnswers, null];
+    setUserAnswers(nextAnswers);
 
     if (isQuizComplete) {
       setStage("result");
-      return;
+    } else {
+      setCurrentQuestionIndex((prev) => prev + 1);
+      setSelectedAnswer(null);
+      setTimeLeft(30);
     }
-
-    setCurrentQuestionIndex((prev) => prev + 1);
-    setSelectedAnswer(null);
-    setRevealState(null);
   };
 
   const handleFinish = () => {
@@ -253,8 +318,9 @@ export default function Juego() {
   const handleStartAgain = () => {
     setCurrentQuestionIndex(0);
     setSelectedAnswer(null);
-    setRevealState(null);
+    setUserAnswers([]);
     setProfileError("");
+    setTimeLeft(30);
     gameCompletionHandledRef.current = false;
     setStage("profile");
   };
@@ -274,27 +340,13 @@ export default function Juego() {
       <div className="juego-page quiz-game-page">
         {stage === "ranking" && (
           <>
-            <section className="juego-hero-card">
-              <div className="juego-hero-badge">
-                <Sparkles size={18} strokeWidth={2.2} />
-                <span>Juego para invitados</span>
-              </div>
-              <div className="juego-hero-title">
-                <Trophy size={28} strokeWidth={2.1} />
-                <div>
-                  <h2>Ranking de invitados</h2>
-                  <p>Juega, suma puntos y escala posiciones.</p>
-                </div>
-              </div>
-            </section>
-
-            <section className="juego-ranking-card">
+            <section className="juego-ranking-card primary-ranking">
               <div className="juego-section-heading">
                 <div>
-                  <h3>Ranking</h3>
-                  <p>Así van los invitados</p>
+                  <h3>Ranking de invitados</h3>
+                  <p>Juega, suma XP y escala posiciones.</p>
                 </div>
-                <Users size={18} strokeWidth={2.1} />
+                <Trophy size={24} strokeWidth={2.4} color="#ffc800" />
               </div>
 
               <div className="juego-ranking-list">
@@ -303,6 +355,16 @@ export default function Juego() {
                 ))}
               </div>
             </section>
+
+            <button
+              type="button"
+              className="btn btn-primary juego-main-cta"
+              onClick={handleStartAgain}
+              style={{ marginTop: "16px", marginBottom: "20px" }}
+            >
+              JUGAR AHORA
+              <ArrowRight size={20} strokeWidth={2.8} />
+            </button>
 
             <section className="juego-bonus-card">
               <div className="juego-section-heading">
@@ -344,15 +406,6 @@ export default function Juego() {
                 </div>
               )}
             </section>
-
-            <button
-              type="button"
-              className="btn btn-primary juego-main-cta"
-              onClick={handleStartAgain}
-            >
-              Jugar ahora
-              <ArrowRight size={18} strokeWidth={2.2} />
-            </button>
           </>
         )}
 
@@ -382,30 +435,19 @@ export default function Juego() {
             </div>
 
             <div className="juego-profile-hero">
-              <div className="juego-profile-hero-icon">
-                <Image size={28} strokeWidth={2.1} />
-              </div>
               <h2>Crea tu perfil</h2>
               <p>Sube una foto y escribe tu nombre para entrar al juego.</p>
             </div>
 
-            <div className="juego-avatar-uploader">
-              <div className="juego-avatar-frame">
-                <ProfileAvatar name={playerDisplayName} photo={profilePhoto} />
-                <button
-                  type="button"
-                  className="juego-avatar-upload-btn"
-                  onClick={() => fileInputRef.current?.click()}
-                >
-                  <Upload size={18} strokeWidth={2.3} />
-                </button>
-              </div>
+            <div className="juego-profile-row">
+              <ProfileAvatar name={playerDisplayName} photo={profilePhoto} />
               <button
                 type="button"
-                className="juego-text-link"
+                className="juego-upload-btn-compact"
                 onClick={() => fileInputRef.current?.click()}
               >
-                Subir foto
+                <Upload size={16} strokeWidth={2.4} />
+                Agregar foto de perfil
               </button>
               <input
                 ref={fileInputRef}
@@ -416,18 +458,15 @@ export default function Juego() {
               />
             </div>
 
-            <label className="juego-field">
-              <span>Tu nombre</span>
-              <div className="juego-input-wrap">
-                <input
-                  className="juego-input"
-                  type="text"
-                  value={profileName}
-                  onChange={(e) => setProfileName(e.target.value)}
-                  placeholder="Ana Martínez"
-                />
-              </div>
-            </label>
+            <div className="juego-input-wrap">
+              <input
+                className="juego-input"
+                type="text"
+                value={profileName}
+                onChange={(e) => setProfileName(e.target.value)}
+                placeholder="Nombre y Apellido"
+              />
+            </div>
 
             {profileError && <p className="juego-error">{profileError}</p>}
 
@@ -467,94 +506,66 @@ export default function Juego() {
             </div>
 
             <div className="juego-question-card">
-              <div className="juego-question-icon">
-                <QuestionIcon size={30} strokeWidth={2.1} />
-              </div>
               <h2>{currentQuestion.title}</h2>
-              <div className="juego-question-meta">
-                <span>
-                  <Clock size={14} strokeWidth={2.4} /> 20 pts por acierto
-                </span>
-                <span>
-                  <Sparkles size={14} strokeWidth={2.4} /> Responde y luego
-                  confirma
-                </span>
-              </div>
-              <div className="juego-progress-bar">
-                <span
-                  style={{
-                    width: `${((currentProgress - 1) / totalQuestions) * 100}%`,
-                  }}
-                />
+
+              <div className="juego-timer-container">
+                <div className="juego-timer-bar">
+                  <span
+                    className="juego-timer-fill"
+                    style={{
+                      width: `${(timeLeft / 30) * 100}%`,
+                      background:
+                        timeLeft <= 5
+                          ? "#ef4444"
+                          : timeLeft <= 10
+                            ? "#f59e0b"
+                            : "#58cc02",
+                    }}
+                  />
+                </div>
+                <div
+                  className="juego-timer-text"
+                  style={{ color: timeLeft <= 5 ? "#ef4444" : "" }}
+                >
+                  <Clock size={16} strokeWidth={2.5} />
+                  {timeLeft}s
+                </div>
               </div>
             </div>
 
             <div className="juego-options">
               {currentQuestion.options.map((option, index) => {
                 const isSelected = selectedAnswer === index;
-                const isCorrect = revealState?.correctIndex === index;
-                const isWrongSelected =
-                  answered &&
-                  revealState?.selectedIndex === index &&
-                  !revealState?.isCorrect;
 
                 return (
                   <button
                     key={option}
                     type="button"
-                    className={`juego-option ${isSelected ? "selected" : ""} ${isCorrect ? "correct" : ""} ${isWrongSelected ? "incorrect" : ""}`}
+                    className={`juego-option ${isSelected ? "selected" : ""}`}
                     onClick={() => handleSelectAnswer(index)}
-                    disabled={answered}
                   >
                     <span className="juego-option-letter">
                       {String.fromCharCode(65 + index)}
                     </span>
                     <span className="juego-option-text">{option}</span>
-                    {answered && isCorrect && (
-                      <Check size={18} strokeWidth={2.6} />
-                    )}
                   </button>
                 );
               })}
             </div>
 
-            {answered && (
-              <div
-                className={`juego-feedback ${revealState?.isCorrect ? "correct" : "incorrect"}`}
-              >
-                {revealState?.isCorrect ? (
-                  <>
-                    <Check size={18} strokeWidth={2.6} />
-                    <span>¡Correcto! +20 pts</span>
-                  </>
-                ) : (
-                  <>
-                    <span>Respuesta correcta:</span>
-                    <strong>
-                      {currentQuestion.options[currentQuestion.correctIndex]}
-                    </strong>
-                  </>
-                )}
-              </div>
-            )}
-
             <button
               type="button"
               className="btn btn-primary juego-main-cta"
-              onClick={answered ? handleNextQuestion : handleSubmitAnswer}
-              disabled={selectedAnswer === null && !answered}
+              onClick={handleSubmitAnswer}
+              disabled={selectedAnswer === null}
             >
-              {answered
-                ? isQuizComplete
-                  ? "Ver resultado"
-                  : "Siguiente pregunta"
-                : "Responder"}
+              {isQuizComplete ? "Ver resultado" : "Siguiente pregunta"}
               <ArrowRight size={18} strokeWidth={2.2} />
             </button>
 
             <div className="juego-score-chip">
               <Trophy size={16} strokeWidth={2.3} />
-              <span>{score} pts acumulados</span>
+              <span>+{score} pts acumulados</span>
             </div>
           </section>
         )}
@@ -599,6 +610,39 @@ export default function Juego() {
               <div>
                 <span>Correctas</span>
                 <strong>{correctCount}</strong>
+              </div>
+            </div>
+
+            <div className="juego-result-breakdown">
+              <h3 className="juego-breakdown-title">Tus Respuestas</h3>
+              <div className="juego-breakdown-list">
+                {QUESTIONS.map((q, idx) => {
+                  const userAnswer = userAnswers[idx];
+                  const isCorrect = userAnswer === q.correctIndex;
+                  return (
+                    <div
+                      key={q.id}
+                      className={`juego-breakdown-item ${isCorrect ? "correct" : "incorrect"}`}
+                    >
+                      <p className="juego-breakdown-q">
+                        <strong>{idx + 1}.</strong> {q.title}
+                      </p>
+                      <div className="juego-breakdown-ans">
+                        <span>
+                          Seleccionaste:{" "}
+                          {userAnswer !== undefined
+                            ? q.options[userAnswer]
+                            : "—"}
+                        </span>
+                      </div>
+                      {!isCorrect && (
+                        <div className="juego-breakdown-correct">
+                          <span>✅ Correcta: {q.options[q.correctIndex]}</span>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
               </div>
             </div>
 

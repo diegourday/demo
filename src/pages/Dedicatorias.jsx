@@ -1,4 +1,5 @@
 import { useState, useRef } from "react";
+import { MessageSquarePlus } from "lucide-react";
 import { useProgress } from "../context/ProgressContext";
 
 const REACTIONS = ["❤️", "🥳", "🎉", "✨", "🥹"];
@@ -139,7 +140,8 @@ export default function Dedicatorias() {
             className="btn btn-primary dedication-open-btn"
             onClick={() => setIsFormOpen(true)}
           >
-            ✍️ Escribir dedicatoria
+            <MessageSquarePlus size={20} strokeWidth={2.5} />
+            Escribir dedicatoria
           </button>
         ) : null}
 
@@ -169,7 +171,7 @@ export default function Dedicatorias() {
                 className="btn-upload-avatar"
                 onClick={() => fileInputRef.current?.click()}
               >
-                📤 Agregar foto de perfil
+                Agregar foto
               </button>
               <input
                 ref={fileInputRef}
