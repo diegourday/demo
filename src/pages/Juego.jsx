@@ -7,12 +7,9 @@ import {
   Check,
   Clock,
   Gift,
-  Image,
   MapPin,
   Sparkles,
   Trophy,
-  Upload,
-  User,
   Users,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -58,6 +55,102 @@ const playGameSound = (type = "success") => {
 };
 
 const BASE_SCORE = 110;
+const QUIZ_TOTAL_TIME = 45;
+
+const AVATAR_OPTIONS = [
+  {
+    id: "sun",
+    label: "Biberón",
+    emoji: "☀️",
+    bg: "linear-gradient(135deg, #ffd54a, #ffb703)",
+  },
+  {
+    id: "tux",
+    label: "Terno",
+    emoji: "🤵",
+    bg: "linear-gradient(135deg, #94a3b8, #334155)",
+  },
+  {
+    id: "dress",
+    label: "Vestido",
+    emoji: "👗",
+    bg: "linear-gradient(135deg, #fb7185, #db2777)",
+  },
+  {
+    id: "cap",
+    label: "Gorra",
+    emoji: "🧢",
+    bg: "linear-gradient(135deg, #60a5fa, #2563eb)",
+  },
+  {
+    id: "crown",
+    label: "Corona",
+    emoji: "👑",
+    bg: "linear-gradient(135deg, #fde68a, #f59e0b)",
+  },
+  {
+    id: "balloon",
+    label: "Globo",
+    emoji: "🎈",
+    bg: "linear-gradient(135deg, #fda4af, #ec4899)",
+  },
+  {
+    id: "spark",
+    label: "Brillo",
+    emoji: "✨",
+    bg: "linear-gradient(135deg, #b26cff, #7c3aed)",
+  },
+  {
+    id: "party",
+    label: "Fiesta",
+    emoji: "🥳",
+    bg: "linear-gradient(135deg, #63d471, #22c55e)",
+  },
+  {
+    id: "moon",
+    label: "Luna",
+    emoji: "🌙",
+    bg: "linear-gradient(135deg, #7dd3fc, #2563eb)",
+  },
+  {
+    id: "star",
+    label: "Estrella",
+    emoji: "⭐",
+    bg: "linear-gradient(135deg, #ffd166, #f97316)",
+  },
+  {
+    id: "teddy",
+    label: "Oso",
+    emoji: "🧸",
+    bg: "linear-gradient(135deg, #fde68a, #d97706)",
+  },
+  {
+    id: "music",
+    label: "Música",
+    emoji: "🎵",
+    bg: "linear-gradient(135deg, #86efac, #16a34a)",
+  },
+  {
+    id: "camera",
+    label: "Foto",
+    emoji: "📷",
+    bg: "linear-gradient(135deg, #a78bfa, #6366f1)",
+  },
+  {
+    id: "cake",
+    label: "Pastel",
+    emoji: "🎂",
+    bg: "linear-gradient(135deg, #fdba74, #ea580c)",
+  },
+  {
+    id: "gift",
+    label: "Regalo",
+    emoji: "🎁",
+    bg: "linear-gradient(135deg, #67e8f9, #06b6d4)",
+  },
+];
+
+const DEFAULT_AVATAR_ID = AVATAR_OPTIONS[0].id;
 
 const RANKING_PLAYERS = [
   { id: "carlos", name: "Carlos Rojas", role: "Invitado", points: 90 },
@@ -133,19 +226,7 @@ const QUESTIONS = [
   },
 ];
 
-function ProfileAvatar({ name, photo }) {
-  if (photo) {
-    return <img src={photo} alt={name} className="juego-avatar-preview" />;
-  }
-
-  return (
-    <div className="juego-avatar-placeholder" aria-hidden="true">
-      <User size={34} strokeWidth={2} />
-    </div>
-  );
-}
-
-function RankingRow({ rank, name, role, points, highlighted, photo }) {
+function RankingRow({ rank, name, role, points, highlighted, avatar }) {
   const initials = name
     .split(" ")
     .map((part) => part[0])
@@ -162,9 +243,7 @@ function RankingRow({ rank, name, role, points, highlighted, photo }) {
       className={`juego-rank-item ${highlighted ? "highlighted" : ""} ${rankClass}`}
     >
       <div className="juego-rank-position">{rankIcon}</div>
-      <div className="juego-rank-avatar">
-        {photo ? <img src={photo} alt={name} /> : <span>{initials}</span>}
-      </div>
+      <AvatarBubble avatar={avatar} initials={initials} />
       <div className="juego-rank-meta">
         <strong>{name}</strong>
         <span>{role}</span>
@@ -177,20 +256,42 @@ function RankingRow({ rank, name, role, points, highlighted, photo }) {
   );
 }
 
+function AvatarBubble({ avatar, initials, size = 48 }) {
+  const style = avatar
+    ? {
+        width: size,
+        height: size,
+        background: avatar.bg,
+      }
+    : {
+        width: size,
+        height: size,
+      };
+
+  return (
+    <div
+      className={`juego-avatar-bubble ${avatar ? "" : "fallback"}`}
+      style={style}
+      aria-hidden="true"
+    >
+      {avatar ? <span>{avatar.emoji}</span> : <span>{initials}</span>}
+    </div>
+  );
+}
+
 export default function Juego() {
   const { completed, markComplete, showStepSuccessToast } = useProgress();
   const navigate = useNavigate();
-  const fileInputRef = useRef(null);
   const gameCompletionHandledRef = useRef(false);
 
   const [stage, setStage] = useState("ranking");
-  const [profileName, setProfileName] = useState("");
-  const [profilePhoto, setProfilePhoto] = useState("");
+  const [alias, setAlias] = useState("");
+  const [selectedAvatarId, setSelectedAvatarId] = useState(DEFAULT_AVATAR_ID);
   const [profileError, setProfileError] = useState("");
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState(null);
   const [userAnswers, setUserAnswers] = useState([]);
-  const [timeLeft, setTimeLeft] = useState(30);
+  const [timeLeft, setTimeLeft] = useState(QUIZ_TOTAL_TIME);
 
   useEffect(() => {
     let timer;
@@ -199,21 +300,15 @@ export default function Juego() {
         setTimeLeft((prev) => prev - 1);
       }, 1000);
     } else if (stage === "quiz" && timeLeft === 0) {
-      // Auto-submit as skipped or null
       handleTimeOut();
     }
     return () => clearTimeout(timer);
-  }, [stage, timeLeft, currentQuestionIndex]);
+  }, [stage, timeLeft]);
 
-  useEffect(() => {
-    return () => {
-      if (profilePhoto?.startsWith("blob:")) {
-        URL.revokeObjectURL(profilePhoto);
-      }
-    };
-  }, [profilePhoto]);
-
-  const playerDisplayName = profileName.trim() || "Ana Martínez";
+  const playerAlias = alias.trim() || "Alias";
+  const selectedAvatar =
+    AVATAR_OPTIONS.find((avatar) => avatar.id === selectedAvatarId) ??
+    AVATAR_OPTIONS[0];
 
   const bonusTasks = useMemo(
     () =>
@@ -232,46 +327,23 @@ export default function Juego() {
     const player = {
       id: "you",
       name: "Tú",
-      role: playerDisplayName,
+      role: playerAlias,
       points: score,
       highlighted: true,
-      photo: profilePhoto || null,
+      avatar: selectedAvatar,
     };
 
     return [player, ...RANKING_PLAYERS]
       .slice()
       .sort((a, b) => b.points - a.points)
       .map((item, index) => ({ ...item, rank: index + 1 }));
-  }, [playerDisplayName, profilePhoto, score]);
+  }, [playerAlias, score, selectedAvatar]);
 
   const currentQuestion = QUESTIONS[currentQuestionIndex];
   const QuestionIcon = currentQuestion.icon;
   const isQuizComplete = currentQuestionIndex === QUESTIONS.length - 1;
   const currentProgress = currentQuestionIndex + 1;
   const totalQuestions = QUESTIONS.length;
-
-  const handleProfileContinue = () => {
-    if (!profileName.trim()) {
-      setProfileError("Escribe tu nombre para continuar.");
-      return;
-    }
-
-    setProfileError("");
-    setStage("quiz");
-    setTimeLeft(30);
-  };
-
-  const handlePhotoChange = (event) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
-
-    if (profilePhoto?.startsWith("blob:")) {
-      URL.revokeObjectURL(profilePhoto);
-    }
-
-    const nextUrl = URL.createObjectURL(file);
-    setProfilePhoto(nextUrl);
-  };
 
   const handleSelectAnswer = (index) => {
     setSelectedAnswer(index);
@@ -280,38 +352,34 @@ export default function Juego() {
   const handleSubmitAnswer = () => {
     if (selectedAnswer === null) return;
 
-    // Save answer and determine next stage
-    const nextAnswers = [...userAnswers, selectedAnswer];
-    setUserAnswers(nextAnswers);
+    setUserAnswers((prev) => [...prev, selectedAnswer]);
 
     if (isQuizComplete) {
       playGameSound("levelup");
+      setSelectedAnswer(null);
       setStage("result");
     } else {
       playGameSound("success");
       setCurrentQuestionIndex((prev) => prev + 1);
       setSelectedAnswer(null);
-      setTimeLeft(30);
     }
   };
 
   const handleTimeOut = () => {
     if (stage !== "quiz") return;
 
-    // Auto-advance with null answer
-    const nextAnswers = [...userAnswers, null];
-    setUserAnswers(nextAnswers);
-
-    if (isQuizComplete) {
-      setStage("result");
-    } else {
-      setCurrentQuestionIndex((prev) => prev + 1);
-      setSelectedAnswer(null);
-      setTimeLeft(30);
-    }
+    setUserAnswers((prev) => [...prev, selectedAnswer]);
+    setSelectedAnswer(null);
+    setStage("result");
   };
 
   const handleFinish = () => {
+    if (!alias.trim()) {
+      setProfileError("Escribe tu alias para continuar.");
+      return;
+    }
+
+    setProfileError("");
     setStage("ranking");
   };
 
@@ -320,9 +388,11 @@ export default function Juego() {
     setSelectedAnswer(null);
     setUserAnswers([]);
     setProfileError("");
-    setTimeLeft(30);
+    setAlias("");
+    setSelectedAvatarId(DEFAULT_AVATAR_ID);
+    setTimeLeft(QUIZ_TOTAL_TIME);
     gameCompletionHandledRef.current = false;
-    setStage("profile");
+    setStage("quiz");
   };
 
   useEffect(() => {
@@ -408,86 +478,14 @@ export default function Juego() {
           </>
         )}
 
-        {stage === "profile" && (
-          <section className="juego-profile-card">
-            <div className="juego-profile-topbar">
-              <button
-                type="button"
-                className="juego-icon-btn"
-                onClick={() => setStage("ranking")}
-                aria-label="Volver al ranking"
-              >
-                <ArrowLeft size={18} strokeWidth={2.5} />
-              </button>
-              <div className="juego-profile-pill">
-                <Sparkles size={14} strokeWidth={2.4} />
-                <span>Crea tu perfil</span>
-              </div>
-              <button
-                type="button"
-                className="juego-icon-btn"
-                onClick={() => setStage("ranking")}
-                aria-label="Cerrar"
-              >
-                <ArrowRight size={18} strokeWidth={2.5} />
-              </button>
-            </div>
-
-            <div className="juego-profile-hero">
-              <h2>Crea tu perfil</h2>
-              <p>Sube una foto y escribe tu nombre para entrar al juego.</p>
-            </div>
-
-            <div className="juego-profile-row">
-              <ProfileAvatar name={playerDisplayName} photo={profilePhoto} />
-              <button
-                type="button"
-                className="juego-upload-btn-compact"
-                onClick={() => fileInputRef.current?.click()}
-              >
-                <Upload size={16} strokeWidth={2.4} />
-                Agregar foto de perfil
-              </button>
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept="image/*"
-                hidden
-                onChange={handlePhotoChange}
-              />
-            </div>
-
-            <div className="juego-input-wrap">
-              <input
-                className="juego-input"
-                type="text"
-                value={profileName}
-                onChange={(e) => setProfileName(e.target.value)}
-                placeholder="Nombre y Apellido"
-              />
-            </div>
-
-            {profileError && <p className="juego-error">{profileError}</p>}
-
-            <button
-              type="button"
-              className="btn btn-primary juego-main-cta profile-continue-btn"
-              onClick={handleProfileContinue}
-            >
-              Continuar
-              <ArrowRight size={18} strokeWidth={2.2} />
-            </button>
-          </section>
-        )}
-
         {stage === "quiz" && (
           <section className="juego-quiz-card">
             <div className="juego-quiz-topbar">
               <button
                 type="button"
                 className="juego-icon-btn"
-                onClick={() => setStage("profile")}
-                aria-label="Volver al perfil"
+                onClick={() => setStage("ranking")}
+                aria-label="Volver al ranking"
               >
                 <ArrowLeft size={18} strokeWidth={2.5} />
               </button>
@@ -505,14 +503,23 @@ export default function Juego() {
             </div>
 
             <div className="juego-question-card">
+              <div className="juego-question-icon">
+                <QuestionIcon size={34} strokeWidth={2.2} />
+              </div>
               <h2>{currentQuestion.title}</h2>
+              <div className="juego-question-meta">
+                <span>
+                  Pregunta {currentProgress} de {totalQuestions}
+                </span>
+                <span>Tiempo total</span>
+              </div>
 
               <div className="juego-timer-container">
                 <div className="juego-timer-bar">
                   <span
                     className="juego-timer-fill"
                     style={{
-                      width: `${(timeLeft / 30) * 100}%`,
+                      width: `${(timeLeft / QUIZ_TOTAL_TIME) * 100}%`,
                       background:
                         timeLeft <= 5
                           ? "#ef4444"
@@ -586,11 +593,57 @@ export default function Juego() {
               <span>pts</span>
             </div>
 
-            <h2>¡Juego completado!</h2>
-            <p>
-              Respondiste {correctCount} de {totalQuestions} preguntas
-              correctamente.
-            </p>
+            <div className="juego-profile-hero">
+              <h2 className="juego-profile-hero-title">Crea tu perfil</h2>
+              <p className="juego-profile-hero-subtitle">
+                Elige un avatar y escribe tu alias para guardar tu partida.
+              </p>
+            </div>
+
+            <div className="juego-avatar-preview-card">
+              <AvatarBubble avatar={selectedAvatar} initials="T" size={72} />
+              <div className="juego-avatar-preview-copy">
+                <strong>{selectedAvatar.label}</strong>
+                <span>Tu avatar actual</span>
+              </div>
+            </div>
+
+            <div className="juego-avatar-picker">
+              {AVATAR_OPTIONS.map((avatar) => {
+                const isSelected = selectedAvatarId === avatar.id;
+                return (
+                  <button
+                    key={avatar.id}
+                    type="button"
+                    className={`juego-avatar-option ${
+                      isSelected ? "selected" : ""
+                    }`}
+                    onClick={() => setSelectedAvatarId(avatar.id)}
+                  >
+                    <AvatarBubble avatar={avatar} initials="T" size={54} />
+                    <span>{avatar.label}</span>
+                  </button>
+                );
+              })}
+            </div>
+
+            <div className="juego-field">
+              <span>Alias</span>
+              <div className="juego-input-wrap">
+                <input
+                  className="juego-input"
+                  type="text"
+                  value={alias}
+                  onChange={(e) => {
+                    setAlias(e.target.value);
+                    if (profileError) setProfileError("");
+                  }}
+                  placeholder="Escribe tu alias"
+                />
+              </div>
+            </div>
+
+            {profileError && <p className="juego-error">{profileError}</p>}
 
             <div className="juego-result-grid">
               <div>
