@@ -65,6 +65,29 @@ function CompletionToast() {
   return <div className="success-toast">{completionToast.message}</div>;
 }
 
+function MiniCelebration() {
+  const { miniCelebration, closeMiniCelebration } = useProgress();
+
+  useEffect(() => {
+    if (!miniCelebration.open) return;
+    const timer = setTimeout(() => closeMiniCelebration(), 1100);
+    return () => clearTimeout(timer);
+  }, [closeMiniCelebration, miniCelebration.key, miniCelebration.open]);
+
+  if (!miniCelebration.open) return null;
+
+  return (
+    <div className="mini-celebration" aria-hidden="true">
+      <span className="mini-celebration-dot dot-1" />
+      <span className="mini-celebration-dot dot-2" />
+      <span className="mini-celebration-dot dot-3" />
+      <span className="mini-celebration-dot dot-4" />
+      <span className="mini-celebration-dot dot-5" />
+      <span className="mini-celebration-core">✨</span>
+    </div>
+  );
+}
+
 function ScrollToTop() {
   const location = useLocation();
 
@@ -91,6 +114,7 @@ export default function App() {
             <Route path="/regalos" element={<Regalos />} />
           </Routes>
           <Footer />
+          <MiniCelebration />
           <CompletionToast />
           <CongratsModal />
         </div>

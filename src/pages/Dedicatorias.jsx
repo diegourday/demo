@@ -150,11 +150,6 @@ export default function Dedicatorias() {
         {/* Form */}
         <div className={`dedication-form ${isFormOpen ? "open" : "collapsed"}`}>
           <form onSubmit={handleSubmit}>
-            <div className="dedication-form-header">
-              <h3>
-                {editingId ? "Editar dedicatoria" : "Escribe tu dedicatoria"}
-              </h3>
-            </div>
             <div
               className={`avatar-upload-row ${isDragging ? "dragging" : ""}`}
               onDrop={handleDrop}
@@ -168,16 +163,13 @@ export default function Dedicatorias() {
                   <span className="avatar-placeholder">👤</span>
                 )}
               </div>
-              <div className="avatar-upload-copy">
-                <button
-                  type="button"
-                  className="btn-upload-avatar"
-                  onClick={() => fileInputRef.current?.click()}
-                >
-                  Agregar foto de perfil
-                </button>
-                <span className="avatar-upload-note">(opcional)</span>
-              </div>
+              <button
+                type="button"
+                className="btn-upload-avatar"
+                onClick={() => fileInputRef.current?.click()}
+              >
+                Agregar foto de perfil
+              </button>
               <input
                 ref={fileInputRef}
                 type="file"

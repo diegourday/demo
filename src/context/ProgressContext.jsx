@@ -17,15 +17,49 @@ function fireCelebrationConfetti() {
   if (typeof window === "undefined") return;
 
   const burst = {
-    particleCount: 80,
-    spread: 70,
-    origin: { y: 0.7 },
+    particleCount: 36,
+    spread: 42,
+    startVelocity: 18,
+    scalar: 0.7,
+    decay: 0.92,
+    gravity: 1.15,
+    origin: { x: 0.5, y: 0.88 },
     colors: ["#0051df", "#5a32ff", "#ff6fae", "#ffd700", "#ffffff"],
   };
 
-  confetti({ ...burst, scalar: 1.05, startVelocity: 30 });
-  confetti({ ...burst, angle: 60, origin: { x: 0, y: 0.75 }, scalar: 0.9 });
-  confetti({ ...burst, angle: 120, origin: { x: 1, y: 0.75 }, scalar: 0.9 });
+  confetti({ ...burst, angle: 90 });
+  confetti({ ...burst, angle: 60, origin: { x: 0.44, y: 0.88 } });
+  confetti({ ...burst, angle: 120, origin: { x: 0.56, y: 0.88 } });
+}
+
+function playSuccessSound() {
+  if (typeof window === "undefined") return;
+
+  try {
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    if (!AudioContext) return;
+
+    const ctx = new AudioContext();
+    const gain = ctx.createGain();
+    gain.connect(ctx.destination);
+
+    const tones = [784, 988, 1319];
+    tones.forEach((freq, index) => {
+      const osc = ctx.createOscillator();
+      osc.type = "triangle";
+      osc.frequency.value = freq;
+      osc.connect(gain);
+
+      const start = ctx.currentTime + index * 0.085;
+      gain.gain.setValueAtTime(0.0001, start);
+      gain.gain.exponentialRampToValueAtTime(0.16, start + 0.012);
+      gain.gain.exponentialRampToValueAtTime(0.0001, start + 0.14);
+      osc.start(start);
+      osc.stop(start + 0.16);
+    });
+  } catch {
+    // ignore sound failures
+  }
 }
 
 export function ProgressProvider({ children }) {
@@ -55,6 +89,10 @@ export function ProgressProvider({ children }) {
     open: false,
     message: "",
   });
+  const [miniCelebration, setMiniCelebration] = useState({
+    open: false,
+    key: 0,
+  });
 
   useEffect(() => {
     try {
@@ -73,6 +111,11 @@ export function ProgressProvider({ children }) {
       if (prev[step]) return prev;
 
       fireCelebrationConfetti();
+      playSuccessSound();
+      setMiniCelebration((current) => ({
+        open: true,
+        key: current.key + 1,
+      }));
 
       return { ...prev, [step]: true };
     });
@@ -91,6 +134,10 @@ export function ProgressProvider({ children }) {
     setCompletionToast({ open: false, message: "" });
   };
 
+  const closeMiniCelebration = () => {
+    setMiniCelebration((current) => ({ ...current, open: false }));
+  };
+
   const completedCount = STEP_ORDER.filter((s) => completed[s]).length;
   const totalSteps = STEP_ORDER.length;
 
@@ -105,6 +152,8 @@ export function ProgressProvider({ children }) {
         setShowCongrats,
         completionToast,
         closeCompletionToast,
+        miniCelebration,
+        closeMiniCelebration,
         showStepSuccessToast,
       }}
     >

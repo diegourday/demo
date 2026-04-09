@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
-  ArrowLeft,
   ArrowRight,
   Badge,
   Camera,
@@ -340,7 +339,6 @@ export default function Juego() {
   }, [playerAlias, score, selectedAvatar]);
 
   const currentQuestion = QUESTIONS[currentQuestionIndex];
-  const QuestionIcon = currentQuestion.icon;
   const isQuizComplete = currentQuestionIndex === QUESTIONS.length - 1;
   const currentProgress = currentQuestionIndex + 1;
   const totalQuestions = QUESTIONS.length;
@@ -481,31 +479,12 @@ export default function Juego() {
         {stage === "quiz" && (
           <section className="juego-quiz-card">
             <div className="juego-quiz-topbar">
-              <button
-                type="button"
-                className="juego-icon-btn"
-                onClick={() => setStage("ranking")}
-                aria-label="Volver al ranking"
-              >
-                <ArrowLeft size={18} strokeWidth={2.5} />
-              </button>
               <div className="juego-quiz-pill">
                 Pregunta {currentProgress} de {totalQuestions}
               </div>
-              <button
-                type="button"
-                className="juego-icon-btn"
-                onClick={() => setStage("ranking")}
-                aria-label="Cerrar juego"
-              >
-                <ArrowRight size={18} strokeWidth={2.5} />
-              </button>
             </div>
 
             <div className="juego-question-card">
-              <div className="juego-question-icon">
-                <QuestionIcon size={34} strokeWidth={2.2} />
-              </div>
               <h2>{currentQuestion.title}</h2>
               <div className="juego-question-meta">
                 <span>
@@ -578,14 +557,6 @@ export default function Juego() {
                 <Trophy size={16} strokeWidth={2.3} />
                 <span>Puntos acumulados</span>
               </div>
-              <button
-                type="button"
-                className="juego-icon-btn"
-                onClick={handleFinish}
-                aria-label="Cerrar resultado"
-              >
-                <ArrowRight size={18} strokeWidth={2.5} />
-              </button>
             </div>
 
             <div className="juego-result-score">
