@@ -156,12 +156,15 @@ export default function Dedicatorias() {
               onDragOver={handleDragOver}
               onDragLeave={handleDragLeave}
             >
-              <div className="avatar-preview">
-                {avatar ? (
-                  <img src={avatar} alt="Avatar" />
-                ) : (
-                  <span className="avatar-placeholder">👤</span>
-                )}
+              <div className="avatar-upload-photo">
+                <div className="avatar-preview">
+                  {avatar ? (
+                    <img src={avatar} alt="Avatar" />
+                  ) : (
+                    <span className="avatar-placeholder">👤</span>
+                  )}
+                </div>
+                <div className="avatar-upload-note">(opcional)</div>
               </div>
               <button
                 type="button"
@@ -223,7 +226,11 @@ export default function Dedicatorias() {
                 <div className="comment-own-header">
                   <span className="badge-own">TU DEDICATORIA</span>
                   <div className="comment-own-actions">
-                    <button onClick={() => handleEdit(c)} title="Editar">
+                    <button
+                      onClick={() => handleEdit(c)}
+                      title="Editar"
+                      style={{ transform: "scaleX(-1)" }}
+                    >
                       ✏️
                     </button>
                     <button onClick={() => handleDelete(c.id)} title="Eliminar">

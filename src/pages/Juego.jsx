@@ -1,3 +1,225 @@
+/*
+import {
+  ArrowRight,
+  Badge,
+    emoji: "🍼",
+    bg: "linear-gradient(135deg, #1e293b, #2563eb)",
+  Gift,
+  MapPin,
+  Sparkles,
+      Camera,
+      Check,
+      Clock,
+} from "lucide-react";
+    bg: "linear-gradient(135deg, #64748b, #0f172a)",
+
+const playGameSound = (type = "success") => {
+  try {
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    import { useNavigate } from "react-router-dom";
+    import { useProgress } from "../context/ProgressContext";
+
+    const playGameSound = (type = "success") => {
+      try {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        if (!AudioContext) return;
+        const ctx = new AudioContext();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+
+        const now = ctx.currentTime;
+        if (type === "success") {
+          osc.type = "sine";
+          osc.frequency.setValueAtTime(600, now);
+          osc.frequency.exponentialRampToValueAtTime(1000, now + 0.1);
+          gain.gain.setValueAtTime(0.2, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
+          osc.start(now);
+          osc.stop(now + 0.15);
+        } else if (type === "levelup") {
+          osc.type = "triangle";
+          osc.frequency.setValueAtTime(440, now);
+          osc.frequency.setValueAtTime(554, now + 0.1);
+          osc.frequency.setValueAtTime(659, now + 0.2);
+
+          gain.gain.setValueAtTime(0.2, now);
+          gain.gain.setValueAtTime(0.2, now + 0.1);
+          gain.gain.setValueAtTime(0.2, now + 0.2);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
+
+          osc.start(now);
+          osc.stop(now + 0.45);
+        }
+      } catch (e) {
+        // ignore
+      }
+    };
+
+    const BASE_SCORE = 110;
+    const QUIZ_TOTAL_TIME = 45;
+
+    const AVATAR_OPTIONS = [
+      {
+        id: "sun",
+        label: "Biberón",
+        emoji: "🍼",
+        bg: "linear-gradient(135deg, #1e293b, #2563eb)",
+        scale: 1.08,
+      },
+      {
+        id: "tux",
+        label: "Terno",
+        emoji: "🤵",
+        bg: "linear-gradient(135deg, #64748b, #0f172a)",
+        scale: 1.05,
+      },
+      {
+        id: "dress",
+        label: "Vestido",
+        emoji: "👗",
+        bg: "linear-gradient(135deg, #fb7185, #c026d3)",
+        scale: 1.1,
+      },
+      {
+        id: "cap",
+        label: "Gorra",
+        emoji: "🧢",
+        bg: "linear-gradient(135deg, #0f766e, #111827)",
+        scale: 1.08,
+      },
+      {
+        id: "crown",
+        label: "Corona",
+        emoji: "👑",
+        bg: "linear-gradient(135deg, #4c1d95, #1e1b4b)",
+        scale: 1.12,
+      },
+      {
+        id: "balloon",
+        label: "Globo",
+        emoji: "🎈",
+        bg: "linear-gradient(135deg, #312e81, #06b6d4)",
+        scale: 1.1,
+      },
+      {
+        id: "spark",
+        label: "Brillo",
+        emoji: "✨",
+        bg: "linear-gradient(135deg, #a855f7, #4c1d95)",
+        scale: 1.12,
+      },
+      {
+        id: "party",
+        label: "Fiesta",
+        emoji: "🥳",
+        bg: "linear-gradient(135deg, #34d399, #059669)",
+        scale: 1.12,
+      },
+      {
+        id: "moon",
+        label: "Luna",
+        emoji: "🌙",
+        bg: "linear-gradient(135deg, #7dd3fc, #2563eb)",
+        scale: 1.05,
+      },
+      {
+        id: "star",
+        label: "Estrella",
+        emoji: "⭐",
+        bg: "linear-gradient(135deg, #1e1b4b, #0f766e)",
+        scale: 1.12,
+      },
+      {
+        id: "teddy",
+        label: "Oso",
+        emoji: "🧸",
+        bg: "linear-gradient(135deg, #fde68a, #b45309)",
+        scale: 1.08,
+      },
+      {
+        id: "music",
+        label: "Música",
+        emoji: "🎵",
+        bg: "linear-gradient(135deg, #86efac, #16a34a)",
+        scale: 1.08,
+      },
+      {
+        id: "camera",
+        label: "Foto",
+        emoji: "📷",
+        bg: "linear-gradient(135deg, #a78bfa, #4338ca)",
+        scale: 1.08,
+      },
+      {
+        id: "cake",
+        label: "Pastel",
+        emoji: "🎂",
+        bg: "linear-gradient(135deg, #581c87, #db2777)",
+        scale: 1.1,
+      },
+      {
+        id: "gift",
+        label: "Regalo",
+        emoji: "🎁",
+        bg: "linear-gradient(135deg, #67e8f9, #0891b2)",
+        scale: 1.08,
+      },
+      {
+        id: "lion",
+        label: "León",
+        emoji: "🦁",
+        bg: "linear-gradient(135deg, #fbbf24, #b45309)",
+        scale: 1.18,
+      },
+      {
+        id: "cat",
+        label: "Gato",
+        emoji: "🐱",
+        bg: "linear-gradient(135deg, #f472b6, #be185d)",
+        scale: 1.16,
+      },
+      {
+        id: "dog",
+        label: "Perro",
+        emoji: "🐶",
+        bg: "linear-gradient(135deg, #60a5fa, #1e40af)",
+        scale: 1.16,
+      },
+      {
+        id: "car",
+        label: "Carrito",
+        emoji: "🚗",
+        bg: "linear-gradient(135deg, #22c55e, #0f766e)",
+        scale: 1.12,
+      },
+      {
+        id: "panda",
+        label: "Panda",
+        emoji: "🐼",
+        bg: "linear-gradient(135deg, #e2e8f0, #64748b)",
+        scale: 1.14,
+      },
+      {
+        id: "rocket",
+        label: "Cohete",
+        emoji: "🚀",
+        bg: "linear-gradient(135deg, #38bdf8, #0f172a)",
+        scale: 1.12,
+      },
+      {
+        id: "fox",
+        label: "Zorro",
+        emoji: "🦊",
+        bg: "linear-gradient(135deg, #064e3b, #0f172a)",
+        scale: 1.14,
+      },
+    ];
+
+    const DEFAULT_AVATAR_ID = AVATAR_OPTIONS[0].id;
+*/
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
   ArrowRight,
@@ -48,7 +270,7 @@ const playGameSound = (type = "success") => {
       osc.start(now);
       osc.stop(now + 0.45);
     }
-  } catch (e) {
+  } catch {
     // ignore
   }
 };
@@ -60,92 +282,212 @@ const AVATAR_OPTIONS = [
   {
     id: "sun",
     label: "Biberón",
-    emoji: "☀️",
-    bg: "linear-gradient(135deg, #ffd54a, #ffb703)",
+    emoji: "🍼",
+    bg: "linear-gradient(135deg, #fff1b8, #f59e0b)",
+    scale: 1.45,
   },
   {
     id: "tux",
     label: "Terno",
     emoji: "🤵",
-    bg: "linear-gradient(135deg, #94a3b8, #334155)",
+    bg: "linear-gradient(135deg, #e5e7eb, #94a3b8)",
+    scale: 1.4,
   },
   {
     id: "dress",
     label: "Vestido",
     emoji: "👗",
-    bg: "linear-gradient(135deg, #fb7185, #db2777)",
+    bg: "linear-gradient(135deg, #ffe4ea, #fb7185)",
+    scale: 1.5,
   },
   {
     id: "cap",
     label: "Gorra",
     emoji: "🧢",
-    bg: "linear-gradient(135deg, #60a5fa, #2563eb)",
+    bg: "linear-gradient(135deg, #d1fae5, #34d399)",
+    scale: 1.45,
   },
   {
     id: "crown",
     label: "Corona",
     emoji: "👑",
-    bg: "linear-gradient(135deg, #fde68a, #f59e0b)",
+    bg: "linear-gradient(135deg, #f3e8ff, #c084fc)",
+    scale: 1.55,
   },
   {
     id: "balloon",
     label: "Globo",
     emoji: "🎈",
-    bg: "linear-gradient(135deg, #fda4af, #ec4899)",
+    bg: "linear-gradient(135deg, #ffe4e6, #fb7185)",
+    scale: 1.5,
   },
   {
     id: "spark",
     label: "Brillo",
     emoji: "✨",
-    bg: "linear-gradient(135deg, #b26cff, #7c3aed)",
+    bg: "linear-gradient(135deg, #f5f3ff, #a855f7)",
+    scale: 1.55,
   },
   {
     id: "party",
     label: "Fiesta",
     emoji: "🥳",
-    bg: "linear-gradient(135deg, #63d471, #22c55e)",
+    bg: "linear-gradient(135deg, #dcfce7, #22c55e)",
+    scale: 1.55,
   },
   {
     id: "moon",
     label: "Luna",
     emoji: "🌙",
-    bg: "linear-gradient(135deg, #7dd3fc, #2563eb)",
+    bg: "linear-gradient(135deg, #e0f2fe, #7dd3fc)",
+    scale: 1.4,
   },
   {
     id: "star",
     label: "Estrella",
     emoji: "⭐",
-    bg: "linear-gradient(135deg, #ffd166, #f97316)",
+    bg: "linear-gradient(135deg, #fef3c7, #fbbf24)",
+    scale: 1.55,
   },
   {
     id: "teddy",
     label: "Oso",
     emoji: "🧸",
-    bg: "linear-gradient(135deg, #fde68a, #d97706)",
+    bg: "linear-gradient(135deg, #fef3c7, #d97706)",
+    scale: 1.45,
   },
   {
     id: "music",
     label: "Música",
     emoji: "🎵",
-    bg: "linear-gradient(135deg, #86efac, #16a34a)",
+    bg: "linear-gradient(135deg, #dcfce7, #4ade80)",
+    scale: 1.45,
   },
   {
     id: "camera",
     label: "Foto",
     emoji: "📷",
-    bg: "linear-gradient(135deg, #a78bfa, #6366f1)",
+    bg: "linear-gradient(135deg, #ede9fe, #8b5cf6)",
+    scale: 1.45,
   },
   {
     id: "cake",
     label: "Pastel",
     emoji: "🎂",
-    bg: "linear-gradient(135deg, #fdba74, #ea580c)",
+    bg: "linear-gradient(135deg, #ffe4e6, #fda4af)",
+    scale: 1.5,
   },
   {
     id: "gift",
     label: "Regalo",
     emoji: "🎁",
-    bg: "linear-gradient(135deg, #67e8f9, #06b6d4)",
+    bg: "linear-gradient(135deg, #cffafe, #22d3ee)",
+    scale: 1.45,
+  },
+  {
+    id: "lion",
+    label: "León",
+    emoji: "🦁",
+    bg: "linear-gradient(135deg, #fef3c7, #f59e0b)",
+    scale: 1.65,
+  },
+  {
+    id: "cat",
+    label: "Gato",
+    emoji: "🐱",
+    bg: "linear-gradient(135deg, #ffe4f1, #f472b6)",
+    scale: 1.6,
+  },
+  {
+    id: "dog",
+    label: "Perro",
+    emoji: "🐶",
+    bg: "linear-gradient(135deg, #dbeafe, #60a5fa)",
+    scale: 1.6,
+  },
+  {
+    id: "car",
+    label: "Carrito",
+    emoji: "🚗",
+    bg: "linear-gradient(135deg, #dcfce7, #22c55e)",
+    scale: 1.55,
+  },
+  {
+    id: "panda",
+    label: "Panda",
+    emoji: "🐼",
+    bg: "linear-gradient(135deg, #f8fafc, #cbd5e1)",
+    scale: 1.6,
+  },
+  {
+    id: "rocket",
+    label: "Cohete",
+    emoji: "🚀",
+    bg: "linear-gradient(135deg, #e0f2fe, #38bdf8)",
+    scale: 1.55,
+  },
+  {
+    id: "fox",
+    label: "Cajita",
+    emoji: "💝",
+    bg: "linear-gradient(135deg, #fef3c7, #fb923c)",
+    scale: 1.55,
+  },
+  {
+    id: "confetti",
+    label: "Confeti",
+    emoji: "🎊",
+    bg: "linear-gradient(135deg, #fef08a, #f97316)",
+    scale: 1.55,
+  },
+  {
+    id: "mic",
+    label: "Micrófono",
+    emoji: "🎤",
+    bg: "linear-gradient(135deg, #e0e7ff, #6366f1)",
+    scale: 1.5,
+  },
+  {
+    id: "champagne",
+    label: "Champaña",
+    emoji: "🍾",
+    bg: "linear-gradient(135deg, #dcfce7, #10b981)",
+    scale: 1.55,
+  },
+  {
+    id: "real-sun",
+    label: "Sol",
+    emoji: "☀️",
+    bg: "linear-gradient(135deg, #fef3c7, #f59e0b)",
+    scale: 1.6,
+  },
+  {
+    id: "rainbow",
+    label: "Arcoíris",
+    emoji: "🌈",
+    bg: "linear-gradient(135deg, #e0f2fe, #ec4899)",
+    scale: 1.55,
+  },
+  {
+    id: "trophy",
+    label: "Trofeo",
+    emoji: "🏆",
+    bg: "linear-gradient(135deg, #fef9c3, #eab308)",
+    scale: 1.5,
+  },
+  {
+    id: "diamond",
+    label: "Diamante",
+    emoji: "💎",
+    bg: "linear-gradient(135deg, #e0f2fe, #0ea5e9)",
+    scale: 1.5,
+  },
+  {
+    id: "alien",
+    label: "Alien",
+    emoji: "👽",
+    bg: "linear-gradient(135deg, #dcfce7, #22c55e)",
+    scale: 1.55,
   },
 ];
 
@@ -261,6 +603,7 @@ function AvatarBubble({ avatar, initials, size = 48 }) {
         width: size,
         height: size,
         background: avatar.bg,
+        "--avatar-icon-scale": avatar.scale ?? 1.08,
       }
     : {
         width: size,
@@ -299,10 +642,14 @@ export default function Juego() {
         setTimeLeft((prev) => prev - 1);
       }, 1000);
     } else if (stage === "quiz" && timeLeft === 0) {
-      handleTimeOut();
+      timer = setTimeout(() => {
+        setUserAnswers((prev) => [...prev, selectedAnswer]);
+        setSelectedAnswer(null);
+        setStage("profile");
+      }, 0);
     }
     return () => clearTimeout(timer);
-  }, [stage, timeLeft]);
+  }, [stage, timeLeft, selectedAnswer]);
 
   const playerAlias = alias.trim() || "Alias";
   const selectedAvatar =
@@ -355,7 +702,7 @@ export default function Juego() {
     if (isQuizComplete) {
       playGameSound("levelup");
       setSelectedAnswer(null);
-      setStage("result");
+      setStage("profile");
     } else {
       playGameSound("success");
       setCurrentQuestionIndex((prev) => prev + 1);
@@ -363,21 +710,17 @@ export default function Juego() {
     }
   };
 
-  const handleTimeOut = () => {
-    if (stage !== "quiz") return;
-
-    setUserAnswers((prev) => [...prev, selectedAnswer]);
-    setSelectedAnswer(null);
-    setStage("result");
-  };
-
-  const handleFinish = () => {
+  const handleProfileSubmit = () => {
     if (!alias.trim()) {
       setProfileError("Escribe tu alias para continuar.");
       return;
     }
 
     setProfileError("");
+    setStage("score");
+  };
+
+  const handleGoToRanking = () => {
     setStage("ranking");
   };
 
@@ -394,7 +737,7 @@ export default function Juego() {
   };
 
   useEffect(() => {
-    if (stage !== "result" || gameCompletionHandledRef.current) return;
+    if (stage !== "score" || gameCompletionHandledRef.current) return;
 
     gameCompletionHandledRef.current = true;
     showStepSuccessToast("juego");
@@ -486,12 +829,6 @@ export default function Juego() {
 
             <div className="juego-question-card">
               <h2>{currentQuestion.title}</h2>
-              <div className="juego-question-meta">
-                <span>
-                  Pregunta {currentProgress} de {totalQuestions}
-                </span>
-                <span>Tiempo total</span>
-              </div>
 
               <div className="juego-timer-container">
                 <div className="juego-timer-bar">
@@ -550,20 +887,8 @@ export default function Juego() {
           </section>
         )}
 
-        {stage === "result" && (
+        {stage === "profile" && (
           <section className="juego-result-card">
-            <div className="juego-result-top">
-              <div className="juego-result-badge">
-                <Trophy size={16} strokeWidth={2.3} />
-                <span>Puntos acumulados</span>
-              </div>
-            </div>
-
-            <div className="juego-result-score">
-              <strong>{score}</strong>
-              <span>pts</span>
-            </div>
-
             <div className="juego-profile-hero">
               <h2 className="juego-profile-hero-title">Crea tu perfil</h2>
               <p className="juego-profile-hero-subtitle">
@@ -599,7 +924,6 @@ export default function Juego() {
             </div>
 
             <div className="juego-field">
-              <span>Alias</span>
               <div className="juego-input-wrap">
                 <input
                   className="juego-input"
@@ -616,16 +940,48 @@ export default function Juego() {
 
             {profileError && <p className="juego-error">{profileError}</p>}
 
-            <div className="juego-result-grid">
-              <div>
+            <button
+              type="button"
+              className="btn btn-primary juego-main-cta result-finish-btn"
+              onClick={handleProfileSubmit}
+            >
+              Terminar
+              <ArrowRight size={18} strokeWidth={2.2} />
+            </button>
+          </section>
+        )}
+
+        {stage === "score" && (
+          <section className="juego-result-card">
+            <div
+              className="juego-result-score"
+              style={{
+                marginBottom: "12px",
+                minHeight: "auto",
+                padding: "16px",
+              }}
+            >
+              <div
+                className="juego-result-score-label"
+                style={{ marginBottom: "8px" }}
+              >
+                <Trophy size={16} strokeWidth={2.3} />
+                <span style={{ textTransform: "none" }}>Puntos acumulados</span>
+              </div>
+              <strong style={{ fontSize: "4rem" }}>{score}</strong>
+              <span className="pts-label">PTS</span>
+            </div>
+
+            <div className="juego-result-grid" style={{ marginTop: "0" }}>
+              <div style={{ padding: "12px 8px" }}>
                 <span>Base</span>
                 <strong>{BASE_SCORE} pts</strong>
               </div>
-              <div>
+              <div style={{ padding: "12px 8px" }}>
                 <span>Quiz</span>
                 <strong>{score - BASE_SCORE} pts</strong>
               </div>
-              <div>
+              <div style={{ padding: "12px 8px" }}>
                 <span>Correctas</span>
                 <strong>{correctCount}</strong>
               </div>
@@ -634,9 +990,10 @@ export default function Juego() {
             <button
               type="button"
               className="btn btn-primary juego-main-cta result-finish-btn"
-              onClick={handleFinish}
+              onClick={handleGoToRanking}
+              style={{ marginTop: "16px", textTransform: "none" }}
             >
-              Terminar
+              Ver ranking
               <ArrowRight size={18} strokeWidth={2.2} />
             </button>
           </section>
