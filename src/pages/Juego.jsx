@@ -363,7 +363,7 @@ const AVATAR_OPTIONS = [
     id: "confetti",
     label: "Confeti",
     emoji: "🎊",
-    bg: "linear-gradient(135deg, #fef08a, #f97316)",
+    bg: "linear-gradient(135deg, #fae8ff, #d946ef)",
     scale: 1.55,
   },
   {
@@ -377,7 +377,7 @@ const AVATAR_OPTIONS = [
     id: "star",
     label: "Estrella",
     emoji: "⭐",
-    bg: "linear-gradient(135deg, #fff1b8, #f59e0b)",
+    bg: "linear-gradient(135deg, #e0e7ff, #6366f1)",
     scale: 1.55,
   },
   {
@@ -537,11 +537,13 @@ function AvatarBubble({ avatar, initials, size = 48 }) {
         width: size,
         height: size,
         background: avatar.bg,
+        fontSize: size * 0.45,
         "--avatar-icon-scale": avatar.scale ?? 1.08,
       }
     : {
         width: size,
         height: size,
+        fontSize: size * 0.35,
       };
 
   return (
@@ -831,7 +833,7 @@ export default function Juego() {
             </div>
 
             <div className="juego-avatar-preview-card">
-              <AvatarBubble avatar={selectedAvatar} initials="T" size={72} />
+              <AvatarBubble avatar={selectedAvatar} initials="T" size={54} />
               <div className="juego-avatar-preview-copy">
                 <strong>{selectedAvatar.label}</strong>
                 <span>Tu avatar actual</span>
@@ -851,7 +853,6 @@ export default function Juego() {
                     onClick={() => setSelectedAvatarId(avatar.id)}
                   >
                     <AvatarBubble avatar={avatar} initials="T" size={54} />
-                    <span>{avatar.label}</span>
                   </button>
                 );
               })}
