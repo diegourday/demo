@@ -3066,9 +3066,12 @@ body.modal-open {
   font-size: 24px;
   font-weight: 800;
   box-shadow: 0 8px 18px rgba(0, 0, 0, 0.12);
-  border: 2px solid rgba(255, 255, 255, 0.3);
   position: relative;
   overflow: hidden;
+  /* Fix Safari/iOS circular clipping bleeding */
+  -webkit-mask-image: -webkit-radial-gradient(white, black);
+  isolation: isolate;
+  transform: translateZ(0);
 }
 
 .juego-avatar-bubble.fallback {
